@@ -6,7 +6,8 @@ add_library(
     #"Charge.cpp"
     #"./Eforce.hpp"
     #"./Eforce.cpp"
-    "graphics/IGraphics.hpp"
+    "graphics/ShapeBase.cpp"
+    "graphics/Arrow.cpp"
 )
 
 target_include_directories(lField PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

@@ -1,9 +1,11 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "src/util/Vector2.hpp"
-
+#include "src/graphics/Arrow.hpp"
 int main() {
     
+    Arrow arrow(sf::Vector2f(10, 10), 50.f, 10.f);
+
     hz::Vector2 v(4.f, 3.f);
     printf("%f", v.abs());
     sf::RenderWindow window(sf::VideoMode({1200, 800}), "Testing Cmake");
@@ -21,7 +23,8 @@ int main() {
 
 
         window.clear();
-        window.draw(shape);
+        // window.draw(shape);
+        window.draw(arrow);
         window.display();
 
     }
