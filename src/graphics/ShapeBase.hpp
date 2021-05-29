@@ -1,10 +1,10 @@
 #include <SFML/Graphics.hpp>
 
-class ShapeBase : public sf::Shape
+class ShapeBase : public sf::Drawable
 {
 
 private:
-
+    virtual void draw(sf::RenderTarget& render, sf::RenderStates state);
 protected:
     sf::String name;
     sf::Vector2f origin;

@@ -11,6 +11,7 @@ namespace hz {
         dec x, y;
 
         Vector2(dec, dec);
+        ~Vector2() {};
 
         dec abs() const;
 
@@ -19,9 +20,10 @@ namespace hz {
         Vector2 operator*(dec a) const;
         Vector2 operator-(Vector2&) const;
         
+        double angle() const;
+        double angle(Vector2&) const;
 
-
-        ~Vector2() {};
+        
     };
     
 

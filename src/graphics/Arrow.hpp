@@ -2,6 +2,9 @@
 
 class Arrow : public ShapeBase {
 
+private:
+   
+
 protected:
     float length;
     float tickness;
@@ -9,8 +12,9 @@ protected:
 public:
     Arrow();
     Arrow(sf::Vector2f origin, float lenght, float tickness);
-
+    void fillArea();
     virtual unsigned int getPointCount() const;
     virtual sf::Vector2f getPoint(unsigned int index) const;
+    
 
 };

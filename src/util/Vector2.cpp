@@ -30,4 +30,16 @@ namespace hz {
     Vector2 Vector2::operator-(Vector2& v) const {
         return Vector2(this->x - v.x, this->y - v.y);
     }
+
+    double Vector2::angle() const {
+
+        return atan2(this->x, this->y);
+    }
+
+    double Vector2::angle(Vector2& v) const {
+        Vector2 u = *this;
+        return acos (
+            u * v /u.abs() /v.abs()
+        );
+    }
 }

@@ -10,38 +10,39 @@ Arrow::Arrow(sf::Vector2f origin, float lenght, float tickness) : ShapeBase(orig
     this->name = "shapeArrow";
     this->length = lenght;
     this->tickness = tickness;
-    this->update();
 
 }
 
 
 unsigned int Arrow::getPointCount() const {
-    return 7;
+    return 5;
 }
 sf::Vector2f Arrow::getPoint(unsigned int index) const {
-    printf("called index %d: \n", index);
-    if(index == 0) {
+    float x = origin.x;
+    float y = origin.y;
 
-        return sf::Vector2f(this->origin.x, this->origin.y + tickness/2);
+    if(index == 0) 
+        return {x, y - tickness/2};
+    if(index == 1)
+        return {x + length, y - tickness/2};
+    if(index == 2)
+        return {x + length, y - tickness/2 - 30.f};
+    if(index == 3)
+        return {x + length + 30.f, y};
+    return {x , y};
+    
+    
+}
 
-    }else
-    if(index == 1) {
-        return sf::Vector2f(this->origin.x + length, this->origin.y + tickness/2);
-    }else
-    if(index == 2) {
-        return sf::Vector2f(this->origin.x + length, this->origin.y + tickness/2 + 10.5f);
-    }else
-    if(index == 3) {
-        return sf::Vector2f(this->origin.x + length + 10.f, this->origin.y);
-    }else
-    if(index == 4) {
-        return sf::Vector2f(this->origin.x + length, this->origin.y - tickness/2 - 10.5f);
-    }else
-    if(index == 5) {
-        return sf::Vector2f(this->origin.x + length, this->origin.y - tickness/2);
-    }else
-    if(index == 6) {
-        return sf::Vector2f(this->origin.x, this->origin.y - tickness/2);
+
+void Arrow::fillArea() {
+    int i = this->getPointCount();
+    for(; i > 0; i--)
+    {
+        
     }
-    return {0,0};
+
+    
+
+
 }

@@ -1,16 +1,27 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "src/util/Vector2.hpp"
-#include "src/graphics/Arrow.hpp"
+#include "src/graphics/Arrow2.cpp"
+#include "src/graphics/ShapeCompound.hpp"
+
 int main() {
     
-    Arrow arrow(sf::Vector2f(10, 10), 50.f, 10.f);
+    Arrow2 arrow(sf::Vector2f(20, 50), 120.f, 40.f);
 
-    hz::Vector2 v(4.f, 3.f);
-    printf("%f", v.abs());
     sf::RenderWindow window(sf::VideoMode({1200, 800}), "Testing Cmake");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Red);
+
+    arrow.setFillColor(sf::Color::Red);
+    arrow.setOutlineColor(sf::Color::White);
+    arrow.setOutlineThickness(1.f);
+    // sf::CircleShape shape(10.f);
+    // shape.setFillColor(sf::Color::Red);
+    // shape.setOrigin({10.f/2, 10.f/2});
+    // shape.setPosition({20.f, 50.f});
+
+    sf::PrimitiveType* p = new sf::PrimitiveType[1];
+    p[0] = sf::Quads;
+    ShapeCompound shape(p, 1, nullptr, 0);
+    shape.drawRectangle(60, 60, 300, 300, sf::Color::Red);
 
     while(window.isOpen()) {
 
@@ -23,8 +34,11 @@ int main() {
 
 
         window.clear();
-        // window.draw(shape);
-        window.draw(arrow);
+       
+        // window.draw(arrow);
+        window.draw(shape);
+        
+       
         window.display();
 
     }
