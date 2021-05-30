@@ -1,23 +1,27 @@
-#include <SFML/Graphics/ConvexShape.hpp>
+#ifndef HAZEM_ARROWSHAPE
+#define HAZEM_ARROWSHAPE
 
-class Arrow2 : public sf::ConvexShape
+#include "ShapeCompound.hpp"
+
+sf::PrimitiveType HZ_ARROW[] = {
+    sf::Quads,
+    sf::Triangles
+};
+
+class Arrow2 : public ShapeCompound
 {
 private:
-    /* data */
+    
 public:
-    Arrow2(sf::Vector2f origin, float length, float tickness) : ConvexShape(5) {
-        float x = origin.x;
-        float y = origin.y;
-        this->setPoint(0, sf::Vector2f(x, y - tickness/2));
+    Arrow2() : ShapeCompound(){}
+    Arrow2(sf::Vector2f position, float length, float tickness) : ShapeCompound(HZ_ARROW, 1, 0, 0) {
+        
+        this->position = position;
+        this->color = sf::Color::Green;
+        this->drawRectangle(position.x, position.y, length, tickness, color);
 
-        this->setPoint(1, sf::Vector2f(x + length, y - tickness/2));
-
-        this->setPoint(2, sf::Vector2f(x + length, y - tickness/2 - 30.f));
-
-        this->setPoint(3, sf::Vector2f(x + length + 30.f, y));
-
-        this->setPoint(4, sf::Vector2f(x , y));
     }
     ~Arrow2() {};
 };
 
+#endif //HAZEM_ARROWSHAPE

@@ -8,7 +8,8 @@ add_library(
     #"./Eforce.cpp"
     "graphics/ShapeBase.cpp"
     "graphics/ShapeCompound.hpp"
-    "graphics/Arrow.cpp"
+    "graphics/ShapeCompound.cpp"
+    # "graphics/Arrow.cpp"
     "graphics/Arrow2.cpp"
 )
 

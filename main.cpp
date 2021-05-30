@@ -1,18 +1,17 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "src/util/Vector2.hpp"
+#include "graphics/Arrow.hpp"
 #include "src/graphics/Arrow2.cpp"
-#include "src/graphics/ShapeCompound.hpp"
-
 int main() {
     
     Arrow2 arrow(sf::Vector2f(20, 50), 120.f, 40.f);
-
+    Arrow2 a2;
     sf::RenderWindow window(sf::VideoMode({1200, 800}), "Testing Cmake");
 
-    arrow.setFillColor(sf::Color::Red);
-    arrow.setOutlineColor(sf::Color::White);
-    arrow.setOutlineThickness(1.f);
+    // arrow.setFillColor(sf::Color::Red);
+    // arrow.setOutlineColor(sf::Color::White);
+    // arrow.setOutlineThickness(1.f);
     // sf::CircleShape shape(10.f);
     // shape.setFillColor(sf::Color::Red);
     // shape.setOrigin({10.f/2, 10.f/2});
@@ -32,13 +31,11 @@ int main() {
                 window.close();
         }
 
-
         window.clear();
        
         // window.draw(arrow);
         window.draw(shape);
         
-       
         window.display();
 
     }

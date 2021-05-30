@@ -1,6 +1,6 @@
 #include "ShapeBase.hpp"
 
-class Arrow : public ShapeBase {
+class Arrow {
 
 private:
    

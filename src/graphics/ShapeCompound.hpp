@@ -1,3 +1,6 @@
+#ifndef HAZEM_COMPOUND_SHAPE
+#define HAZEM_COMPOUND_SHAPE
+
 #include "ShapeBase.hpp"
 
 class ShapeCompound : public sf::Drawable {
@@ -5,24 +8,32 @@ class ShapeCompound : public sf::Drawable {
 private:
     sf::VertexBuffer* shapes;
     unsigned int n;
-
+    unsigned int index;
+    
     virtual void draw(sf::RenderTarget& render, sf::RenderStates state) const {
         
-        // for(int i = 0; i < n; i++)
-            render.draw(shapes[0]);
+        for(int i = 0; i < n; i++)
+            render.draw(shapes[i]);
     }
 
+protected:
+    sf::Color color;
+    sf::Vector2f orign;
+    sf::Vector2f position;
+    
+    void swap() {
+
+        if(++index >= n) index =0;
+    }
+
+    void bind(std::vector<sf::Vertex>& varray, int a) {
+        shapes[index].update(varray.data(), a, 0);
+    }
 
 public:
-    ShapeCompound() {};
+    ShapeCompound();
 
-    ShapeCompound(sf::PrimitiveType* primitives, int nShapes, unsigned int* offset, unsigned int nVertex) {
-        shapes = new sf::VertexBuffer[nShapes];
-        this->n = nShapes;
-        for(int i = 0; i < nShapes; i++) {
-            shapes[i].setPrimitiveType(primitives[i]);
-        }
-    }
+    ShapeCompound(sf::PrimitiveType* primitives, int nShapes, unsigned int* offset, unsigned int nVertex);
 
     
 
@@ -55,5 +66,20 @@ public:
         
     }
 
+    
+
+
+    /// Setters
+    void setColor(sf::Color);
+
+    /// \brief Absolute color rgb
+    /// \param int 32 bits unsigned or a hexadecimal number 0xRRGGBB
+    void setColor(uint32_t);
+    void setOrign(sf::Vector2f);
+    void setPosition(sf::Vector2f);
+    
 
 };
+
+
+#endif //!HAZEM_COMPOUND_SHAPE
