@@ -16,30 +16,61 @@ Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompoun
     
     this->position = position;
     
-    this->drawRectangle(position.x, position.y, length, tickness);
-    this->swap();
+    this->length = length;
+    this->tickness = tickness;
+    this->origin = {0, 0};
+
+    this->drawArrow();
+    // this->drawRectangle(position.x, position.y, length, tickness);
+    // this->swap();
     
-    sf::Vector2f v[3];
-    v[0] = {100, 100};
-    v[1] = {100, 200};
-    v[2] = {200, 100};
-    this->drawTriangle(v);
-    this->color = sf::Color::Red;
-    v[1] = {100, 0};
-    this->swap();
-    this->drawTriangle(v);
+    // sf::Vector2f v[3];
+    // v[0] = {100, 100};
+    // v[1] = {100, 200};
+    // v[2] = {200, 100};
+    // this->drawTriangle(v);
+    // this->color = sf::Color::Red;
+    // v[1] = {100, 0};
+    // this->swap();
+    // this->drawTriangle(v);
     
 
 }
+
+void Arrow::drawArrow() {
+    // Total Lenght = L + l;
+    float l = 0.3 * length;
+    float L = length - l;
+    // h is proporcional to lenght
+    float h = tickness * l / length + 4.f;
+
+    float x = position.x + L - origin.x;
+    float y = position.y + tickness/2 - origin.y;
+    this->drawRectangle(position.x - origin.x , position.y - origin.y,
+                        position.x + L - origin.x, position.y + tickness - origin.y);
+    this->swap();
+    
+   
+    
+    sf::Vector2f v[3];
+    v[0] = {x, y};
+    v[1] = {x + l, y};
+    v[2] = {x, y + h};
+    this->drawTriangle(v);
+    // this->color = sf::Color::Red;
+    v[2] = {x, y - h};
+    this->swap();
+    this->drawTriangle(v);
+    this->swap();
+}
+
+
+void Arrow::update() {
+    this->drawArrow();
+}
+
 
 void Arrow::fillArea() {
 
 
-}
-
-void Arrow::update() {
-    int i;
-    for(i = 0; i < this->getNShapes(); i++) {
-
-    }
 }

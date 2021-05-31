@@ -3,29 +3,25 @@
 
 #include "ShapeBase.hpp"
 
-class ShapeCompound : public sf::Drawable {
+class ShapeCompound : public sf::Drawable, public sf::Transformable {
 
 private:
     sf::VertexBuffer* shapes;
     unsigned int n;
     unsigned int index;
     
-    virtual void draw(sf::RenderTarget& render, sf::RenderStates state) const {
-        for(int i = 0; i < n; i++) {
-            render.draw(shapes[i], state);
-        }
-    }
-
+    virtual void draw(sf::RenderTarget& render, sf::RenderStates state) const;
+    virtual void update();
 protected:
     const char* name;
     sf::Color color;
     sf::Vector2f origin;
     sf::Vector2f position;
     
+    /// \brief Swap the index to the next
     void swap() {
 
         if(++index >= n) index = 0;
-        printf("current index: %d\n", index);
     }
 
     void bind(std::vector<sf::Vertex>& varray, int a) {
@@ -36,13 +32,13 @@ protected:
 
 public:
     ShapeCompound();
-
     ShapeCompound(sf::PrimitiveType* primitives, int nShapes, unsigned int* offset, unsigned int nVertex);
 
     
-
+    /// \brief Draw a rectangle in current buffer index
     void drawRectangle(double x1, double y1, double x2, double y2);
-    /// \brief Draw a triangle
+
+    /// \brief Draw a triangle in current buffer index
     /// \param vertex[3]
     void drawTriangle(sf::Vector2f* vertex);
     
@@ -51,13 +47,16 @@ public:
     unsigned int getNShapes() const;
 
     /// Setters
-    void setColor(sf::Color);
+
+    
+    void setOrign(sf::Vector2f);
+    void setPosition(sf::Vector2f);
 
     /// \brief Absolute color rgb
     /// \param int 32 bits unsigned or a hexadecimal number 0xRRGGBB
-    void setColor(uint32_t);
-    void setOrign(sf::Vector2f);
-    void setPosition(sf::Vector2f);
+    // void setColor(uint32_t);
+    void setColor(sf::Color);
+
     
 
 };

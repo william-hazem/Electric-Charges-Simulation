@@ -4,17 +4,29 @@ ShapeCompound::ShapeCompound() {
     this->index = 0;
     this->n = 0;
     setOrign(sf::Vector2f(0, 0));
-    setColor(0xFFFFFF);
+    setColor(sf::Color::White);
 }
 
 
 ShapeCompound::ShapeCompound(sf::PrimitiveType* primitives, int nShapes, unsigned int* offset,
-unsigned int nVertex) : ShapeCompound() {
+unsigned int nVertex) {
+    this->index = 0;
     shapes = new sf::VertexBuffer[nShapes];
+    setColor(sf::Color::White);
     this->n = nShapes;
     for(int i = 0; i < nShapes; i++) {
         shapes[i].setPrimitiveType(primitives[i]);
     }
+}
+
+void ShapeCompound::draw(sf::RenderTarget& render, sf::RenderStates state) const {
+    for(int i = 0; i < n; i++) {
+        render.draw(shapes[i], state);
+    }
+}
+
+void ShapeCompound::update() {
+    /// \todo
 }
 
 /// GETTERS
@@ -33,25 +45,29 @@ sf::VertexBuffer* ShapeCompound::getBuffer(uint64_t index) {
 
 void ShapeCompound::setColor(sf::Color color) {
     this->color = color;
+    this->update();
 }
 
-void ShapeCompound::setColor(uint32_t color) {
-    sf::Color rgb;
-    rgb.r = (uint8_t) color >> 24;  //0x'RR'GGBBAA
-    rgb.g = (uint8_t) color >> 16;  //0xRR'GG'BBAA
-    rgb.b = (uint8_t) color >> 8;   //0xRRGG'BB'AA
-    rgb.a = (uint8_t) color;        //0xRRGGBB'AA'
-    this->color = rgb;
+// void ShapeCompound::setColor(uint32_t color) {
+//     sf::Color rgb;
+//     rgb.r = (uint8_t) color >> 24;  //0x'RR'GGBBAA
+//     rgb.g = (uint8_t) color >> 16;  //0xRR'GG'BBAA
+//     rgb.b = (uint8_t) color >> 8;   //0xRRGG'BB'AA
+//     rgb.a = (uint8_t) color;        //0xRRGGBB'AA'
+//     this->color = rgb;
 
-}
+// }
 
 void ShapeCompound::setOrign(sf::Vector2f origin) {
     this->origin = origin;
+    this->update();
 }
 
 void ShapeCompound::setPosition(sf::Vector2f position) {
     this->position = position;
+    this->update();
 }
+
 
 /// Particular
 
@@ -80,7 +96,6 @@ void ShapeCompound::drawRectangle(double x1, double y1, double x2, double y2) {
     varray[2].color = color;
     varray[3].color = color;
     bool i = shapes[index].update(varray.data(), 4, 0);
-    printf("Sucessful: %d\n", i);
         
 }
 
@@ -96,7 +111,6 @@ void ShapeCompound::drawTriangle(sf::Vector2f* vertex) {
     
     shapes[index].create(3);
     bool i = shapes[index].update(v, 3, 0);
-    printf("Sucessfull 2: %d\n", i);
 
     
 

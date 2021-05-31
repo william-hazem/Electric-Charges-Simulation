@@ -5,6 +5,10 @@
 
 
 class Arrow : public ShapeCompound {
+
+private:
+    void drawArrow();
+    virtual void update();
 protected:
     float length;
     float tickness;
@@ -14,9 +18,6 @@ public:
     Arrow(sf::Vector2f position, float length, float tickness);
     void fillArea();
     
-
-
-    void update();
 };
 
 #endif //HAZEM_ARROWSHAPE
