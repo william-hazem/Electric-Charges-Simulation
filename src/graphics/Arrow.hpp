@@ -1,20 +1,22 @@
-#include "ShapeBase.hpp"
+#ifndef HAZEM_ARROWSHAPE
+#define HAZEM_ARROWSHAPE
+#include "ShapeCompound.hpp"
 
-class Arrow {
 
-private:
-   
 
+class Arrow : public ShapeCompound {
 protected:
     float length;
     float tickness;
 
 public:
     Arrow();
-    Arrow(sf::Vector2f origin, float lenght, float tickness);
+    Arrow(sf::Vector2f position, float length, float tickness);
     void fillArea();
-    virtual unsigned int getPointCount() const;
-    virtual sf::Vector2f getPoint(unsigned int index) const;
     
 
+
+    void update();
 };
+
+#endif //HAZEM_ARROWSHAPE

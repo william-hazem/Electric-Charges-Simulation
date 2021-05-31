@@ -9,8 +9,8 @@ add_library(
     "graphics/ShapeBase.cpp"
     "graphics/ShapeCompound.hpp"
     "graphics/ShapeCompound.cpp"
-    # "graphics/Arrow.cpp"
-    "graphics/Arrow2.cpp"
+    "graphics/Arrow.hpp"
+    "graphics/Arrow.cpp"
 )
 
 target_include_directories(lField PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
