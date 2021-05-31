@@ -1,11 +1,14 @@
+file(GLOB src_util "util\\*.cpp")
+
 add_library(  
     lField
-
-    "util/Vector2.hpp"
-    "util/Vector2.cpp"
-    #"Charge.cpp"
-    #"./Eforce.hpp"
-    #"./Eforce.cpp"
+    ${src_util}
+    # ${src_graphics}
+    # "util/Vector2.hpp"
+    # "util/Vector2.cpp"
+    # "Charge.cpp"
+    "./Eforce.hpp"
+    "./Eforce.cpp"
     "graphics/ShapeBase.cpp"
     "graphics/ShapeCompound.hpp"
     "graphics/ShapeCompound.cpp"
