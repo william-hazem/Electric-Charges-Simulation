@@ -1,19 +1,33 @@
-file(GLOB src_util "util\\*.cpp")
+file(GLOB src_util "util\\*.cpp" "graphics\\*.cpp")
+
 
 add_library(  
     lField
-    ${src_util}
-    # ${src_graphics}
-    # "util/Vector2.hpp"
-    # "util/Vector2.cpp"
-    # "Charge.cpp"
-    "./Eforce.hpp"
-    "./Eforce.cpp"
+    
+
+    ##
+    #   Graphics
+    ##
     "graphics/ShapeBase.cpp"
     "graphics/ShapeCompound.hpp"
     "graphics/ShapeCompound.cpp"
-    "graphics/Arrow.hpp"
-    "graphics/Arrow.cpp"
+    # Graphics - Shape
+    "graphics/Shapes/Arrow.hpp"
+    "graphics/Shapes/Arrow.cpp"
+    
+    ##
+    #   Util
+    ###
+
+    ${src_util}
+
+    ##
+    #   Physics
+    ##
+
+    ##
+    #   Simulation
+    ##
 )
 
 target_include_directories(lField PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

@@ -7,3 +7,7 @@ Simulation::Simulation(/* args */)
 Simulation::~Simulation()
 {
 }
+
+void init() {
+    
+}

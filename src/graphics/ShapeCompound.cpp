@@ -2,7 +2,7 @@
 
 ShapeCompound::ShapeCompound() {
     this->index = 0;
-    this->n = 0;
+    this->s_size = 0;
     setOrign(sf::Vector2f(0, 0));
     setColor(sf::Color::White);
 }
@@ -13,14 +13,14 @@ unsigned int nVertex) {
     this->index = 0;
     shapes = new sf::VertexBuffer[nShapes];
     setColor(sf::Color::White);
-    this->n = nShapes;
+    this->s_size = nShapes;
     for(int i = 0; i < nShapes; i++) {
         shapes[i].setPrimitiveType(primitives[i]);
     }
 }
 
 void ShapeCompound::draw(sf::RenderTarget& render, sf::RenderStates state) const {
-    for(int i = 0; i < n; i++) {
+    for(int i = 0; i < s_size; i++) {
         render.draw(shapes[i], state);
     }
 }
@@ -32,41 +32,15 @@ void ShapeCompound::update() {
 /// GETTERS
 
 unsigned int ShapeCompound::getNShapes() const{
-    return this->n;
+    return this->s_size;
 }
 
 sf::VertexBuffer* ShapeCompound::getBuffer(uint64_t index) {
-    if(index < this->n) 
+    if(index < this->s_size) 
         return nullptr;
     return &shapes[index];
 }
 
-/// SETTERS
-
-void ShapeCompound::setColor(sf::Color color) {
-    this->color = color;
-    this->update();
-}
-
-// void ShapeCompound::setColor(uint32_t color) {
-//     sf::Color rgb;
-//     rgb.r = (uint8_t) color >> 24;  //0x'RR'GGBBAA
-//     rgb.g = (uint8_t) color >> 16;  //0xRR'GG'BBAA
-//     rgb.b = (uint8_t) color >> 8;   //0xRRGG'BB'AA
-//     rgb.a = (uint8_t) color;        //0xRRGGBB'AA'
-//     this->color = rgb;
-
-// }
-
-void ShapeCompound::setOrign(sf::Vector2f origin) {
-    this->origin = origin;
-    this->update();
-}
-
-void ShapeCompound::setPosition(sf::Vector2f position) {
-    this->position = position;
-    this->update();
-}
 
 
 /// Particular

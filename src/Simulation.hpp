@@ -9,15 +9,22 @@ class Simulation : public hz::Singleton
 {
 
 private:
-    bool running        = false;
-    bool showForces     = false;
-    bool showEField     = false;
-    std::vector<ShapeBase> shapes;
+    bool running;
+    bool showForces;
+    bool showEField;
+    std::vector<ShapeBase*> shapes;
     
+    void init();
+protected:
+
+   
 
 public:
     Simulation(/* args */);
     ~Simulation();
+
+    bool start();
+
 
 };
 

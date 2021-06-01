@@ -1,8 +1,7 @@
-#ifndef HAZEM_ARROWSHAPE
-#define HAZEM_ARROWSHAPE
-#include "ShapeCompound.hpp"
+#ifndef HAZEM_SHAPE_ARROW
+#define HAZEM_SHAPE_ARROW
 
-
+#include "../ShapeCompound.hpp"
 
 class Arrow : public ShapeCompound {
 
@@ -20,4 +19,4 @@ public:
     
 };
 
-#endif //HAZEM_ARROWSHAPE
+#endif //HAZEM_SHAPE_ARROW

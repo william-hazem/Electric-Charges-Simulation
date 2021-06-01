@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "src/util/Vector2.hpp"
-#include "graphics/Arrow.hpp"
+#include "graphics/Shapes/Arrow.hpp"
 int main() {
     
     Arrow arrow(sf::Vector2f(60, 60), 40.f, 1.5f);
