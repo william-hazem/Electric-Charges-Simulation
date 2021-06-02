@@ -3,14 +3,32 @@
 
 namespace hz {
 
+    Vector2::Vector2() {
+        this->x = 0;
+        this->y = 0;
+    }
+
     Vector2::Vector2(dec x, dec y) {
         this->x = x;
         this->y = y;
     }
 
+    Vector2::Vector2(const Vector2& v) {
+        this->x = v.x;
+        this->y = v.y;
+    }
+
     dec Vector2::abs() const {
-        return sqrt(
-            pow(x, 2) + pow(y, 2)
+        return (dec) sqrt(
+            pow(this->x, 2) + pow(this->y, 2)
+        );
+    }
+
+    Vector2 Vector2::unit() const {
+        double abs = this->abs();
+        return Vector2 (
+            this->x / abs,
+            this->y / abs
         );
     }
 
@@ -29,6 +47,11 @@ namespace hz {
 
     Vector2 Vector2::operator-(Vector2& v) const {
         return Vector2(this->x - v.x, this->y - v.y);
+    }
+
+    void Vector2::operator+=(Vector2& v) {
+        this->x += v.x;
+        this->y += v.y;
     }
 
     double Vector2::angle() const {
