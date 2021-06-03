@@ -18,6 +18,12 @@ namespace hz {
         this->y = v.y;
     }
 
+    Vector2::Vector2(dec x, dec y, dec sx, dec sy) {
+        this->x = x / sx;
+        this->y = y / sy;
+
+    }
+
     dec Vector2::abs() const {
         return (dec) sqrt(
             pow(this->x, 2) + pow(this->y, 2)
@@ -32,12 +38,12 @@ namespace hz {
         );
     }
 
-    Vector2 Vector2::operator+(Vector2& v) const {
+    Vector2 Vector2::operator+(const Vector2& v) const {
         return Vector2(this->x + v.x, this->y + v.y);
 
     }
     
-    float Vector2::operator*(Vector2& v) const {
+    float Vector2::operator*(const Vector2& v) const {
         return this->x * v.x + this->y * v.y;
     }
     
@@ -45,14 +51,21 @@ namespace hz {
         return Vector2(this->x * a, this->y * a);
     }
 
-    Vector2 Vector2::operator-(Vector2& v) const {
+    Vector2 Vector2::operator-(const Vector2& v) const {
         return Vector2(this->x - v.x, this->y - v.y);
     }
 
-    void Vector2::operator+=(Vector2& v) {
+    void Vector2::operator+=(const Vector2& v) {
         this->x += v.x;
         this->y += v.y;
     }
+
+
+    void Vector2::setAngle(const dec angle) {
+        this->x = cos(angle) - sin(angle);
+        this->y = sin(angle) + cos(angle);
+    }
+
 
     double Vector2::angle() const {
 
