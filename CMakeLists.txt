@@ -44,3 +44,9 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
+
+set_target_properties(
+    Field
+    PROPERTIES
+    CXX_STANDARD 17
+)

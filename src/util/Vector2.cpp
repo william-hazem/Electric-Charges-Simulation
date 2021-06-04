@@ -3,6 +3,8 @@
 
 namespace hz {
 
+    const double PI = 3.14159265359;
+
     Vector2::Vector2() {
         this->x = 0;
         this->y = 0;
@@ -62,8 +64,9 @@ namespace hz {
 
 
     void Vector2::setAngle(const dec angle) {
-        this->x = cos(angle) - sin(angle);
-        this->y = sin(angle) + cos(angle);
+        double rad = angle * PI / 180;
+        this->x = x*cos(angle) - y*sin(angle);
+        this->y = y*sin(angle) + x*cos(angle);
     }
 
 
@@ -72,10 +75,10 @@ namespace hz {
         return atan2(this->x, this->y);
     }
 
-    double Vector2::angle(Vector2& v) const {
-        Vector2 u = *this;
-        return acos (
-            u * v /u.abs() /v.abs()
-        );
-    }
+    // double Vector2::angle(Vector2& v) const {
+    //     Vector2 u = *this;
+    //     return acos (
+    //         u * v /u.abs() /v.abs()
+    //     );
+    // }
 }

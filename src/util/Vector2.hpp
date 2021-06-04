@@ -31,9 +31,7 @@ namespace hz {
         void operator+=(const Vector2&);
 
         void setAngle(const dec);
-
         double angle() const;
-        double angle(Vector2&) const;
 
         
     };

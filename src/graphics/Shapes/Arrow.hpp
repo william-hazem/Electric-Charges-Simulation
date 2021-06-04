@@ -2,6 +2,7 @@
 #define HAZEM_SHAPE_ARROW
 
 #include "../ShapeCompound.hpp"
+#include "../../util/Vector2.hpp"
 
 class Arrow : public ShapeCompound {
 
@@ -11,11 +12,15 @@ private:
 protected:
     float length;
     float tickness;
-
+    double angle;
 public:
     Arrow();
     Arrow(sf::Vector2f position, float length, float tickness);
     void fillArea();
+
+    void setAngle(const double);
+    double getAngle() const;
+
     
 };
 

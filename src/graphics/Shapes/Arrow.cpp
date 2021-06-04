@@ -10,6 +10,7 @@ Arrow::Arrow() : ShapeCompound() {
     this->name = "shapeArrow";
     this->length = 1.f;
     this->tickness = .1f;
+    this->angle = 0;
 }
 
 Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompound(primitives_parts, 3, 0, 0) {
@@ -19,7 +20,7 @@ Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompoun
     this->length = length;
     this->tickness = tickness;
     this->origin = {0, 0};
-
+    this->angle = 0;
     this->drawArrow();
     // this->drawRectangle(position.x, position.y, length, tickness);
     // this->swap();
@@ -46,8 +47,23 @@ void Arrow::drawArrow() {
 
     float x = position.x + L - origin.x;
     float y = position.y + tickness/2 - origin.y;
-    this->drawRectangle(position.x - origin.x , position.y - origin.y,
-                        position.x + L - origin.x, position.y + tickness - origin.y);
+
+    hz::Vector2 p1, p2;
+    double xf = 0;
+    double yf = 0;
+    // p1 = hz::Vector2(position.x + xf - origin.x, position.y + yf - origin.y);
+    p1 = hz::Vector2(position.x, position.y);
+    // p2 = hz::Vector2(position.x + xf + L - origin.x, position.y + yf + tickness - origin.y);
+    p2 = hz::Vector2(position.x + L, position.y + tickness);
+    p1.x += origin.x;
+    p2.x += origin.x;
+    p1.y += origin.y;
+    p2.y += origin.y;
+    this->setRotation(90);
+    printf("P1 = (%.*f, %.*f)\n", p1.x, p1.y);
+
+    
+    this->drawRectangle(p1.x , p1.y, p2.x, p2.y);
     this->swap();
     
    
@@ -73,4 +89,12 @@ void Arrow::update() {
 void Arrow::fillArea() {
 
 
+}
+
+void Arrow::setAngle(const double angle) {
+    this->angle = angle;
+}
+
+double Arrow::getAngle() const {
+    return this->angle;
 }
