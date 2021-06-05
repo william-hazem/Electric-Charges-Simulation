@@ -26,6 +26,7 @@ target_link_libraries(
     "${CMAKE_SOURCE_DIR}\\sfml-window-2.dll"
     "${CMAKE_SOURCE_DIR}\\sfml-system-2.dll"
     #"${CMAKE_SOURCE_DIR}\\lib/liblField.a"
+    "opengl32.a"
 )
 
 target_include_directories(

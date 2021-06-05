@@ -19,7 +19,7 @@ Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompoun
     
     this->length = length;
     this->tickness = tickness;
-    this->origin = {0, 0};
+    this->origin = {500, 500};
     this->angle = 0;
     this->drawArrow();
     // this->drawRectangle(position.x, position.y, length, tickness);
@@ -52,13 +52,15 @@ void Arrow::drawArrow() {
     double xf = 0;
     double yf = 0;
     // p1 = hz::Vector2(position.x + xf - origin.x, position.y + yf - origin.y);
-    p1 = hz::Vector2(position.x, position.y);
+    p1 = hz::Vector2(position.x - origin.x - L/2, position.y - origin.y - tickness/2);
     // p2 = hz::Vector2(position.x + xf + L - origin.x, position.y + yf + tickness - origin.y);
-    p2 = hz::Vector2(position.x + L, position.y + tickness);
+    p2 = hz::Vector2(position.x - origin.x + L/2, position.y - origin.y + tickness/2);
+    
     p1.x += origin.x;
     p2.x += origin.x;
     p1.y += origin.y;
     p2.y += origin.y;
+    
     this->setRotation(90);
     printf("P1 = (%.*f, %.*f)\n", p1.x, p1.y);
 

@@ -9,7 +9,7 @@ private:
     sf::VertexBuffer* shapes;
     unsigned int s_size;
     unsigned int index;
-    
+    mutable double angle = 0.1;
     virtual void draw(sf::RenderTarget& render, sf::RenderStates state) const;
     virtual void update();
 protected:
@@ -36,6 +36,9 @@ public:
     /// \brief Draw a rectangle in current buffer index
     void drawRectangle(double x1, double y1, double x2, double y2);
 
+
+    void drawRect(double x1, double y1, double x2, double y2);
+    
     /// \brief Draw a triangle in current buffer index
     /// \param vertex[3]
     void drawTriangle(sf::Vector2f* vertex);
