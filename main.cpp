@@ -41,12 +41,12 @@ int main() {
        
         window.draw(arrow);
         // window.draw(arrow);
-        window.draw(circle);
-        window.draw(circle2);
+        // window.draw(circle);
+        // window.draw(circle2);
         // angle += 0.1f;
         angle = 45;
         
-        arrow.setAngle(angle);
+        arrow.setAngle(0);
         // window.draw(arrow2);
         
         window.display();

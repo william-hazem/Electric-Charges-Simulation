@@ -46,19 +46,20 @@ void Arrow::drawArrow() {
 
     float x = position.x + L - origin.x;
     float y = position.y + tickness/2 - origin.y;
-    this->drawRectangle(position.x - origin.x , position.y - origin.y,
-                        position.x + L - origin.x, position.y + tickness - origin.y);
+
+    this->drawRectangle(position.x - origin.x , position.y - tickness/2 - origin.y,
+                        position.x + L - origin.x, position.y + tickness/2 - origin.y);
     this->swap();
     
-   
+    
     
     sf::Vector2f v[3];
-    v[0] = {x, y};
-    v[1] = {x + l, y};
+    v[0] = {x, position.y - origin.y};
+    v[1] = {x + l, position.y - origin.y};
     v[2] = {x, y + h};
     this->drawTriangle(v);
     // this->color = sf::Color::Red;
-    v[2] = {x, y - h};
+    v[2] = {x, position.y - tickness/2 - origin.y - h};
     this->swap();
     this->drawTriangle(v);
     this->swap();
