@@ -18,7 +18,7 @@ Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompoun
     
     this->length = length;
     this->tickness = tickness;
-    this->origin = {0, 0};
+    this->origin = {200, 200};
 
     this->drawArrow();
     // this->drawRectangle(position.x, position.y, length, tickness);

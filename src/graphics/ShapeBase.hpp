@@ -17,6 +17,7 @@ protected:
     sf::Vector2f origin;
     sf::Vector2f position;
     sf::Color color;
+    double angle;
 public:
     ShapeBase(/* args */);
     explicit ShapeBase(sf::Vector2f position);
@@ -25,7 +26,7 @@ public:
 
     void setOrign(sf::Vector2f);
     void setPosition(sf::Vector2f);
-
+    void setAngle(double);
     /// \brief Absolute color rgb
     /// \param int 32 bits unsigned or a hexadecimal number 0xRRGGBB
     // void setColor(uint32_t);

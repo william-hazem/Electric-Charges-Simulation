@@ -46,3 +46,7 @@ void ShapeBase::setPosition(sf::Vector2f position) {
     this->position = position;
     this->update();
 }
+
+void ShapeBase::setAngle(double angle) {
+    this->angle = angle;
+}

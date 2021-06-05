@@ -20,6 +20,9 @@ unsigned int nVertex) {
 }
 
 void ShapeCompound::draw(sf::RenderTarget& render, sf::RenderStates state) const {
+    sf::Transform t;
+    t.rotate(this->angle);
+    state.transform = t;
     for(int i = 0; i < s_size; i++) {
         render.draw(shapes[i], state);
     }
