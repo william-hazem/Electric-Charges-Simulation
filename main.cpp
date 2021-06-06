@@ -2,6 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include "src/util/Vector2.hpp"
 #include "graphics/Shapes/Arrow.hpp"
+#include "Simulation.hpp"
+#include <OpenGL.hpp>
+
 int main() {
     
     Arrow arrow(sf::Vector2f(0, 0), 40.f, 3.5f);
@@ -29,12 +32,11 @@ int main() {
     
     window.setView(view);
     while(window.isOpen()) {
-
         sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
+        while(window.pollEvent(event)) {
+            if(event.type == sf::Event::Closed) {
                 window.close();
+            }
         }
 
         window.clear();
@@ -49,9 +51,24 @@ int main() {
         arrow.setAngle(0);
         // window.draw(arrow2);
         
+        angle += 1.1f;
+        // shape.setRotation(angle);
+        // window.draw(shape);
+        // window.draw(c);
+        // window.draw(c1);
+        // if(r < 1) r += 0.005;
+        // if(g < 1) g += 0.005;
+        // if(b < 1) b += 0.005;
+        // else {
+        //     r = 0;
+        //     b = 0;
+        //     g = 0;
+        // }
+        window.setFramerateLimit(30);
         window.display();
 
     }
+
 
 
     return 0;

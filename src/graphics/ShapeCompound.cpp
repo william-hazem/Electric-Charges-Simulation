@@ -93,3 +93,24 @@ void ShapeCompound::drawTriangle(sf::Vector2f* vertex) {
 
 
 }
+
+void ShapeCompound::drawRect(double x1, double y1, double x2, double y2) {
+    double temp;
+    if (x1 > x2) {
+        temp = x1;
+        x1 = x2;
+        x2 = temp;
+    }
+
+    if (y1 > y2) {
+        temp = y1;
+        y1 = y2;
+        y2 = temp;
+    }
+
+    if(!shapes[this->index].getVertexCount())
+        shapes[this->index].create(4);
+
+    double vertex[4];
+    vertex[0] = {};
+}
