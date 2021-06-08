@@ -1,6 +1,3 @@
-file(GLOB src_util "util\\*.cpp")
-
-
 add_library(  
     lField
     
@@ -9,10 +6,8 @@ add_library(
     ##
 
     "graphics/ShapeBase.cpp"
-    "graphics/ShapeCompound.hpp"
     "graphics/ShapeCompound.cpp"
     # Graphics - Shape
-    "graphics/Shapes/Arrow.hpp"
     "graphics/Shapes/Arrow.cpp"
     
     ##
@@ -32,7 +27,6 @@ add_library(
     #   Events
     ##
     
-    "Events/EventHandler.hpp"
     "Events/EventHandler.cpp"
 
     ##
@@ -43,5 +37,13 @@ add_library(
     "WrapperParticle.cpp"
 )
 
-target_include_directories(lField PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+##
+#   INCLUDE FILES
+#   Put all in E-FIELD/include
+#
+#   ex: E-FIELD/include/foo.hpp
+##
+target_include_directories(lField PUBLIC "${PROJECT_SOURCE_DIR}\\include")
+
+### Output lib file for <Project_DIR>/lib
 set(LIBRARY_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/lib")

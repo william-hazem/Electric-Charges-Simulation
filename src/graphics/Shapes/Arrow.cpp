@@ -1,4 +1,4 @@
-#include "Arrow.hpp"
+#include <Hazem/Graphics/Shapes/Arrow.hpp>
 
 sf::PrimitiveType primitives_parts[3] = {
     sf::Quads,

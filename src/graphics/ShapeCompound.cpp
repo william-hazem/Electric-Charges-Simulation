@@ -1,4 +1,4 @@
-#include "ShapeCompound.hpp"
+#include <Hazem/Graphics/ShapeCompound.hpp>
 
 ShapeCompound::ShapeCompound() {
     this->index = 0;

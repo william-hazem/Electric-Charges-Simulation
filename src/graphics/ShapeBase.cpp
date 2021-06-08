@@ -1,4 +1,4 @@
-#include "ShapeBase.hpp"
+#include <Hazem/Graphics/ShapeBase.hpp>
 
 ShapeBase::ShapeBase() {
     this->name = "";

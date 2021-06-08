@@ -1,6 +1,5 @@
-#include "Simulation.hpp"
+#include <Hazem/Simulation.hpp>
 
-#include <array>
 #include <cmath>
 
 Simulation::Simulation() {}

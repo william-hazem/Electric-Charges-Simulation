@@ -1,4 +1,4 @@
-#include "Particle.hpp"
+#include <Hazem/Physics/Particle.hpp>
 
 double Particle::radius = 15.f;
 

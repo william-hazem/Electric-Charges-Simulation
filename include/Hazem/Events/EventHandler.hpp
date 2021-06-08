@@ -1,15 +1,13 @@
 #ifndef HAZEM_EVENT_HANDLER
 #define HAZEM_EVENT_HANDLER
 
-#include "Simulation.hpp"
-
+#include <Hazem/
 
 class EventHandler
 {
 public:
-    EventHandler() {}
-    EventHandler(Simulation){}
+    EventHandler(Simulation s) {}
     ~EventHandler() {}
-};
+}; 
 
 #endif //!HAZEM_EVENT_HANDLER

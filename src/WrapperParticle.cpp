@@ -1,4 +1,4 @@
-#include "WrapperParticle.hpp"
+#include <Hazem/WrapperParticle.hpp>
 
 WrapperParticle::WrapperParticle() {
     this->arrow = nullptr;

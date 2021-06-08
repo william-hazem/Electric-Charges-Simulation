@@ -1,7 +1,6 @@
 #ifndef HAZEM_W_PARTICLE
 #define HAZEM_W_PARTICLE
 
-
 #include "Physics/Particle.hpp"
 #include "graphics/Shapes/Arrow.hpp"
 

@@ -6,7 +6,7 @@
 #include "Physics/Particle.hpp"
 #include "WrapperParticle.hpp"
 #include "util/Singleton.hpp"
-#include "Events/EventHandler.hpp"
+// #include "Events/EventHandler.hpp"
 
 
 class Simulation

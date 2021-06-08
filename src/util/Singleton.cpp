@@ -1,4 +1,4 @@
-#include "Singleton.hpp"
+#include <Hazem/Util/Singleton.hpp>
 
 namespace hz {
 
