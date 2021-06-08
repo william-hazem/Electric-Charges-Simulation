@@ -1,7 +1,7 @@
 #ifndef HAZEM_EVENT_HANDLER
 #define HAZEM_EVENT_HANDLER
 
-#include <Hazem/
+#include <Hazem/Simulation.hpp>
 
 class EventHandler
 {

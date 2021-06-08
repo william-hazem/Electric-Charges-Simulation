@@ -2,9 +2,8 @@
 #define WIN_32
 
 #include <SFML/Graphics.hpp>
-#include "src/util/Vector2.hpp"
-#include "graphics/Shapes/Arrow.hpp"
-#include "Simulation.hpp"
+#include <Hazem/Graphics/graphics.hpp>
+#include <Hazem/Simulation.hpp>
 #include <OpenGL.hpp>
 
 int main() {
