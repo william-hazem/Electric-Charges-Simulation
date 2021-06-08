@@ -11,6 +11,12 @@ add_library(
     "graphics/Shapes/Arrow.cpp"
     
     ##
+    #   Elements
+    ##
+
+    "Elements/Text.cpp"
+
+    ##
     #   Util
     ###
 

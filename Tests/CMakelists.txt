@@ -1,0 +1,25 @@
+if(TESTS_ENABLE)
+
+message("-> TESTS_ENABLE: TRUE <-")
+enable_testing()
+file(GLOB TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp  )
+#   For each file in TEST_FILES
+foreach(cppFile ${TEST_FILES})
+    #   Change the .cpp from cppFile for "" (no-string) and save in var newFile
+    string(REPLACE ".cpp" "" newFile ${cppFile})
+    #   Use the string in newFile to create a executable and bind with cppFile
+    add_executable(${newFile} ${cppFile})
+    #   Target the executable with our Library
+    target_link_libraries(
+        ${newFile} lField
+        "${PROJECT_SOURCE_DIR}\\bin\\sfml-graphics-2.dll"
+        "${PROJECT_SOURCE_DIR}\\bin\\sfml-window-2.dll"
+        "${PROJECT_SOURCE_DIR}\\bin\\sfml-system-2.dll"
+        #   Opengl
+        "opengl32.a" 
+    )
+    
+endforeach()
+
+
+endif(TESTS_ENABLE)

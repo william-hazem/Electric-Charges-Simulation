@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Field VERSION 0.1.0)
 
-# Library dir
-add_subdirectory(src)   #lField
+##
+#   Enviroments
+##
+
+set(TESTS_ENABLE ON)    #   Compile Tests files
+
+add_subdirectory(src)   # Library source dir
+add_subdirectory(Tests) # Test dir
 
 include(CTest)
 enable_testing()
@@ -52,3 +58,5 @@ set_target_properties(
     PROPERTIES
     CXX_STANDARD 17
 )
+
+
