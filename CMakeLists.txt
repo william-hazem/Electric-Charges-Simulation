@@ -18,17 +18,18 @@ file(GLOB libSrc "C:\\MinGW\\lib\\*.a")
 
 target_link_libraries(
     Field PUBLIC
-    ${libScr}
+    # ${libScr}
+    #   My lib
     lField
-    # SFML_dll
-    # .dll files necessary
-    "${CMAKE_SOURCE_DIR}\\sfml-graphics-2.dll"
-    "${CMAKE_SOURCE_DIR}\\sfml-window-2.dll"
-    "${CMAKE_SOURCE_DIR}\\sfml-system-2.dll"
-    #"${CMAKE_SOURCE_DIR}\\lib/liblField.a"
-    "opengl32.a"
+    #   SFML - Dynamic libraries
+    "${CMAKE_SOURCE_DIR}\\bin\\sfml-graphics-2.dll"
+    "${CMAKE_SOURCE_DIR}\\bin\\sfml-window-2.dll"
+    "${CMAKE_SOURCE_DIR}\\bin\\sfml-system-2.dll"
+    #   Opengl
+    "opengl32.a" 
 )
 
+# SFML include dir
 target_include_directories(
     Field PUBLIC
     "C:\\MinGW\\include\\SFML\\"
