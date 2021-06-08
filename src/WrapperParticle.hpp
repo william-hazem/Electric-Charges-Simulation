@@ -10,13 +10,21 @@ class WrapperParticle
 private:
     Particle* particle;
     Arrow* arrow;
-
+    unsigned int id;
    
 public:
-    WrapperParticle(Particle&, Arrow&);
+    WrapperParticle();
+    WrapperParticle(Particle&, Arrow&, unsigned int);
     ~WrapperParticle();
 
+
+    void bind(Particle*, Arrow*);
+    void bindRender(sf::RenderTarget*);
+
+    void setId(unsigned);
+
     void update();
+    Arrow* getShape() const;
 };
 
 

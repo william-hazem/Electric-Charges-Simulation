@@ -29,6 +29,13 @@ add_library(
     "Physics/Particle.cpp"
 
     ##
+    #   Events
+    ##
+    
+    "Events/EventHandler.hpp"
+    "Events/EventHandler.cpp"
+
+    ##
     #   Simulation
     ##
 

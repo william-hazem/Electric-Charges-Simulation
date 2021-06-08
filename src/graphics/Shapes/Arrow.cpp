@@ -10,7 +10,6 @@ Arrow::Arrow() : ShapeCompound() {
     this->name = "shapeArrow";
     this->length = 1.f;
     this->tickness = .1f;
-    this->angle = 0;
 }
 
 Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompound(primitives_parts, 3, 0, 0) {
@@ -75,12 +74,4 @@ void Arrow::update() {
 void Arrow::fillArea() {
 
 
-}
-
-void Arrow::setAngle(const double angle) {
-    this->angle = angle;
-}
-
-double Arrow::getAngle() const {
-    return this->angle;
 }

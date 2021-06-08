@@ -1,4 +1,5 @@
 #include "Vector2.hpp"
+
 #include <cmath>
 
 namespace hz {
@@ -53,6 +54,10 @@ namespace hz {
         return Vector2(this->x * a, this->y * a);
     }
 
+    Vector2 Vector2::operator/(const dec a) const{
+        return Vector2(this->x / a, this->y / a);
+    }
+
     Vector2 Vector2::operator-(const Vector2& v) const {
         return Vector2(this->x - v.x, this->y - v.y);
     }
@@ -72,7 +77,8 @@ namespace hz {
 
     double Vector2::angle() const {
 
-        return atan2(this->x, this->y);
+        // return atan2(this->x, this->y);
+        return atan2(this->x, this->y) * 180 / PI;
     }
 
     // double Vector2::angle(Vector2& v) const {

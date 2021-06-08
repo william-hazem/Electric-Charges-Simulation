@@ -9,7 +9,7 @@ private:
     sf::VertexBuffer* shapes;
     unsigned int s_size;
     unsigned int index;
-    mutable double angle = 0.1;
+    // mutable double angle = 0.1;
     virtual void draw(sf::RenderTarget& render, sf::RenderStates state) const;
     virtual void update();
 protected:
@@ -45,7 +45,10 @@ public:
     
     /// Getters
 
-    unsigned int getNShapes() const;
+
+    /// \brief get number of shapes in this compositision
+    /// \return a size number
+    unsigned int getShapesCount() const;
 
     /// Setters
 

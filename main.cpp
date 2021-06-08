@@ -1,4 +1,6 @@
 #include <iostream>
+#define WIN_32
+
 #include <SFML/Graphics.hpp>
 #include "src/util/Vector2.hpp"
 #include "graphics/Shapes/Arrow.hpp"
@@ -7,19 +9,17 @@
 
 int main() {
     
-    Arrow arrow(sf::Vector2f(0, 0), 40.f, 3.5f);
+    Simulation simulation(1200, 900);
+    simulation.run();
+
+    return 0;
+    Arrow arrow(sf::Vector2f(200, 200), 40.f, 3.5f);
     arrow.setOrign({0, 0});
     double angle = 0.01;
     // Arrow arrow2(sf::Vector2f(120, 70), 80.f, 190.f);
     sf::RenderWindow window(sf::VideoMode({1200, 800}), "Testing Cmake");
-
-    // sf::PrimitiveType* p = new sf::PrimitiveType[1];
-    // p[0] = sf::Quads;
-    // ShapeCompound shape(p, 1, nullptr, 0);
-    // shape.drawRectangle(60, 60, 300, 300);
-
     sf::CircleShape circle(5);
-    circle.setPosition({0, 0});
+    circle.setPosition({200, 200});
     circle.setOrigin({5, 5});
     circle.setFillColor(sf::Color::Green);
     sf::CircleShape circle2(5);
@@ -29,7 +29,6 @@ int main() {
     // circle2.setOrigin({35, 35});
     sf::View view;
     view.move({-600, -400});
-    
     window.setView(view);
     while(window.isOpen()) {
         sf::Event event;
@@ -37,24 +36,32 @@ int main() {
             if(event.type == sf::Event::Closed) {
                 window.close();
             }
+
+            if(event.type == sf::Event::MouseButtonPressed) {
+                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    sf::Vector2i mouse = sf::Mouse::getPosition();
+                    printf("Mx, My = %d, %d\n", mouse.x, mouse.y);
+                    printf("Mx, My = %d, %d\n", mouse.x - 600, mouse.y - 300);
+                    printf("------------------\n");
+                }
+            }
         }
 
         window.clear();
        
         window.draw(arrow);
-        // window.draw(arrow);
-        // window.draw(circle);
-        // window.draw(circle2);
-        // angle += 0.1f;
-        angle = 45;
+        angle += 0.1f;
+        angle += 0.5f;
         
-        arrow.setAngle(0);
+        arrow.setAngle(angle);
+        // arrow.getShapesCount();
         // window.draw(arrow2);
         
-        angle += 1.1f;
+        // angle += 1.1f;
         // shape.setRotation(angle);
         // window.draw(shape);
-        // window.draw(c);
+        window.draw(circle);
+        // window.draw(arrow);
         // window.draw(c1);
         // if(r < 1) r += 0.005;
         // if(g < 1) g += 0.005;
@@ -64,10 +71,13 @@ int main() {
         //     b = 0;
         //     g = 0;
         // }
-        window.setFramerateLimit(30);
+        window.setFramerateLimit(60);
         window.display();
 
-    }
+    } 
+        // window.draw(circle);
+        // window.draw(circle2);
+        //
 
 
 

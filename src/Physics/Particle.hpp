@@ -16,9 +16,11 @@ private:
     static double radius;
 
 protected: 
-    hz::Vector2 aceleration;
+
+    // Particle position on plane xy
     hz::Vector2 position;
-    
+    // Particle aceleration, but its calc with funcs and stored
+    hz::Vector2 aceleration;
 
 public:
     static double elementary_charge;
@@ -41,8 +43,9 @@ public:
     sf::CircleShape getShape() const;
     hz::Vector2 getForce(const Particle&) const;
     hz::Vector2 getForce(std::vector<Particle>&) const;
-    hz::Vector2 getAceleration(const Particle&) const;
-    hz::Vector2 getAceleration(std::vector<Particle>&) const;
+    hz::Vector2 getAceleration() const;
+    hz::Vector2 calcAceleration(const Particle&) const;
+    hz::Vector2 calcAceleration(std::vector<Particle>&) const;
     
     void move(std::vector<Particle>&);
     void move(const Particle&);

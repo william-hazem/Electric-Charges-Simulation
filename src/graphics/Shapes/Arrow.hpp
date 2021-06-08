@@ -12,14 +12,13 @@ private:
 protected:
     float length;
     float tickness;
-    double angle;
 public:
     Arrow();
     Arrow(sf::Vector2f position, float length, float tickness);
     void fillArea();
 
-    void setAngle(const double);
-    double getAngle() const;
+    // void setAngle(const double);
+    // double getAngle() const;
 
     
 };

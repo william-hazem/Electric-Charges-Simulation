@@ -82,8 +82,8 @@ hz::Vector2 Particle::getForce(const Particle& particle) const{
     // double force = (k * this->charge * particle.getCharge()) / (d * d);
     double force(0.0);
 
-    if(this->signal != particle.signal) force = -1000 / d;
-    else force = 1000 / d;
+    if(this->signal != particle.signal) force = -1000 / d / d;
+    else force = 1000 / d / d;
 
     forceVector.x = force * direction.x;
     forceVector.y = force * direction.y;
@@ -105,7 +105,11 @@ hz::Vector2 Particle::getForce(std::vector<Particle>& particles) const{
     return total_force;
 }
 
-hz::Vector2 Particle::getAceleration(const Particle& particle) const {
+hz::Vector2 Particle::getAceleration() const {
+    return this->aceleration;
+}
+
+hz::Vector2 Particle::calcAceleration(const Particle& particle) const {
     hz::Vector2 force(this->getForce(particle));
     // hz::dec x = force.x;
     // hz::dec y = force.y;
@@ -116,11 +120,9 @@ hz::Vector2 Particle::getAceleration(const Particle& particle) const {
     );
 }
 
-hz::Vector2 Particle::getAceleration(std::vector<Particle>& particles) const {
+hz::Vector2 Particle::calcAceleration(std::vector<Particle>& particles) const {
     hz::Vector2 force_sum = this->getForce(particles);
     
-
-
     return hz::Vector2(
         force_sum.x / eletron_mass,
         force_sum.y / eletron_mass
@@ -131,22 +133,39 @@ hz::Vector2 Particle::getAceleration(std::vector<Particle>& particles) const {
 
 void Particle::move(std::vector<Particle>& particles) {
     
-    hz::Vector2 a = this->getAceleration(particles);
-    double x = this->position.x + a.x;
-    double y = this->position.y + a.y;
+    hz::Vector2 f = this->getForce(particles);
+    
+    
     hz::Vector2 other, pos;
     bool canMove = true;
     double dist;
+
     for(Particle i : particles) {
         other = i.getPosition();
         pos = this->position - other;
         dist = pos.abs();
-        
+
+        // REACTION FORCE PHASE
         if(dist <= 2*radius) {
-            canMove = false;
-            break;
+            // canMove = false;
+            
+            
+            // Destribuição da força sobre o vetor r (FORÇA NORMAL)
+            hz::Vector2 normal = (pos.unit()*(hz::dec)(pos.unit() * f));
+            printf("Force: %.10f, %.10f\n", f.x, f.y);
+            printf("NORMAL FORCE: %.10f, %.10f\n", normal.x, normal.y);
+            f.x -= normal.x;
+            f.y -= normal.y;
         }
+        
     }
+
+    hz::Vector2 a = f / eletron_mass;
+    this->setAceleration(hz::Vector2(a));
+    // New Position
+    double x = this->position.x + a.x;
+    double y = this->position.y + a.y;
+
     if(canMove) {
         // printf("Can move\n");
         // printf("Aceleration: %.*f - %.*f\n", a.x, a.y);
@@ -154,12 +173,12 @@ void Particle::move(std::vector<Particle>& particles) {
         this->setPosition(hz::Vector2(x, y));
     }
 
-    this->setAceleration(hz::Vector2(x, y));
+    
 }
 
 void Particle::move(const Particle& particle) {
 
-    hz::Vector2 force = this->getAceleration(particle);
+    hz::Vector2 force = this->calcAceleration(particle);
     hz::Vector2 newPosition = this->position + force;
     double r = hz::Vector2(this->position - particle.position).abs();
     

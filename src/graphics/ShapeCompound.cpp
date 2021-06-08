@@ -21,7 +21,7 @@ unsigned int nVertex) {
 
 void ShapeCompound::draw(sf::RenderTarget& render, sf::RenderStates state) const {
     sf::Transform t;
-    t.rotate(this->angle);
+    t.rotate(this->angle, this->position - this->origin);
     state.transform = t;
     for(int i = 0; i < s_size; i++) {
         render.draw(shapes[i], state);
@@ -34,7 +34,7 @@ void ShapeCompound::update() {
 
 /// GETTERS
 
-unsigned int ShapeCompound::getNShapes() const{
+unsigned int ShapeCompound::getShapesCount() const{
     return this->s_size;
 }
 
@@ -110,7 +110,4 @@ void ShapeCompound::drawRect(double x1, double y1, double x2, double y2) {
 
     if(!shapes[this->index].getVertexCount())
         shapes[this->index].create(4);
-
-    double vertex[4];
-    vertex[0] = {};
 }
