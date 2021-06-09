@@ -6,19 +6,18 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode({1200, 800}), "Testing Hz::Text");
     // window.setFramerateLimit(30);
-    // Text text;
     sf::Font font;
-    if(font.loadFromFile("assets/CaviarDreams.ttf"))
-    {
-        printf("LOADED!\n");
+    if(!font.loadFromFile("../../assets/arial.ttf")) {
+        printf("!ERROR!\n");
     }
-    sf::Text text = sf::Text();
-    text.setFont(font);
-    text.setCharacterSize(24);
-    text.setFillColor(sf::Color::White);
-    text.setPosition(500, 500);
-    text.setString(std::string("Text"));
-    
+    sf::Font font2;
+    Hz::loadDefaultFont(&font2);
+    Text t, t2;
+    t.setFont(font2);
+    t2.setPosition({600, 600});
+    // t.setFont(font);
+    t.setPosition({200, 200});
+    t2.setFont(font2);
     while(window.isOpen()) {
         sf::Event event;
         while(window.pollEvent(event)) {
@@ -38,7 +37,9 @@ int main() {
 
         window.clear();
        
-        window.draw(text);
+        // window.draw(text);
+        window.draw(t);
+        window.draw(t2);
 
         window.display();
     } 

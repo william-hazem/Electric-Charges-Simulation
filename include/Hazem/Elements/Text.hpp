@@ -2,12 +2,14 @@
 #define HAZEM_ELEMENT_TEXT
 
 #include <SFML/Graphics/Text.hpp>
+#include <Hazem/Util/Font.hpp>
 #include <string>
 
-class Text {
+#include <Hazem/Elements/ElementBase.hpp>
 
+class Text : public sf::Text, public ElementBase {
+    
 public:
-    sf::Text text;
     Text();
     
 };

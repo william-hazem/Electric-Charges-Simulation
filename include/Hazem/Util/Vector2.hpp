@@ -15,7 +15,7 @@ namespace hz {
         Vector2();
         // Vector2(Vector2&);
         Vector2(const Vector2&);
-        explicit Vector2(dec, dec);
+        explicit Vector2(const dec&, const dec&);
         Vector2(dec, dec, dec, dec);
         ~Vector2() {};
 

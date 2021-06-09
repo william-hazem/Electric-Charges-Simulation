@@ -11,7 +11,7 @@ namespace hz {
         this->y = 0;
     }
 
-    Vector2::Vector2(dec x, dec y) {
+    Vector2::Vector2(const dec& x, const dec& y) {
         this->x = x;
         this->y = y;
     }
