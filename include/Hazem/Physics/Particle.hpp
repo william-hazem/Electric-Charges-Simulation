@@ -2,18 +2,15 @@
 #define HAZEM_PARTICLE
 
 #include <SFML/Graphics.hpp>
-#include "../util/Vector2.hpp"
-#include <cmath>
+#include <Hazem/Util/Vector2.hpp>
 #include <vector>
 
 class Particle
 {
     // friend class ParticleShape;
 private:
-    sf::CircleShape shape;
     void init(bool);
     double charge;
-    static double radius;
 
 protected: 
 
@@ -23,6 +20,7 @@ protected:
     hz::Vector2 aceleration;
 
 public:
+    static const double radius;
     static double elementary_charge;
     static double eletron_mass;
     static double proton_mass;
@@ -30,20 +28,23 @@ public:
 
     bool signal;
     
+    Particle();
     Particle(bool);
     ~Particle();
     
-    void setPosition(hz::Vector2 position);
+    void setPosition(const hz::Vector2&);
     void setAceleration(hz::Vector2);
     const hz::Vector2& getPosition() const;
     const double& getCharge() const;
     void setCharge(double);
     
-
-    sf::CircleShape getShape() const;
+    // GETTERS
+    const bool& getSignal() const;
     hz::Vector2 getForce(const Particle&) const;
     hz::Vector2 getForce(std::vector<Particle>&) const;
     hz::Vector2 getAceleration() const;
+
+    /// \brief Calculate force between two particles
     hz::Vector2 calcAceleration(const Particle&) const;
     hz::Vector2 calcAceleration(std::vector<Particle>&) const;
     
