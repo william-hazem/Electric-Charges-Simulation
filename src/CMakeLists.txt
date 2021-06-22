@@ -14,6 +14,7 @@ add_library(
     #   Elements
     ##
 
+    "Elements/ElementBase.cpp"
     "Elements/Text.cpp"
 
     ##
@@ -22,6 +23,7 @@ add_library(
 
     "util/Singleton.cpp"
     "util/Vector2.cpp"
+    "util/Font.cpp"
 
     ##
     #   Physics
@@ -41,6 +43,7 @@ add_library(
 
     "Simulation.cpp"
     "WrapperParticle.cpp"
+    "HandlerParticle.cpp"
 )
 
 ##

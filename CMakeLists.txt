@@ -5,7 +5,7 @@ project(Field VERSION 0.1.0)
 #   Enviroments
 ##
 
-set(TESTS_ENABLE ON)    #   Compile Tests files
+set(TESTS_ENABLE OFF)    #   Compile Tests files
 
 add_subdirectory(src)   # Library source dir
 add_subdirectory(Tests) # Test dir
