@@ -4,26 +4,36 @@
 #include "Physics/Particle.hpp"
 #include "graphics/Shapes/Arrow.hpp"
 
+#include <vector>
+
 class WrapperParticle
 {
+    friend class HandlerParticle;
 private:
-    Particle* particle;
-    Arrow* arrow;
+    Particle particle;
+    Arrow* acelerationArrow;
+    sf::CircleShape particleShape;
     unsigned int id;
+
+    void updateShape();
    
 public:
     WrapperParticle();
     WrapperParticle(Particle&, Arrow&, unsigned int);
     ~WrapperParticle();
 
-
-    void bind(Particle*, Arrow*);
-    void bindRender(sf::RenderTarget*);
+    // void bind()
+    void bind(const Particle&, Arrow*);
+    // void create(const CircleShape&);
 
     void setId(unsigned);
-
+    /// \brief Update the position/angle of Particle and acelerationArrow shape
     void update();
+
+    // GETTERS
     Arrow* getShape() const;
+    const sf::CircleShape& getParticleShape() const;
+    const Particle& getParticle() const;
 };
 
 

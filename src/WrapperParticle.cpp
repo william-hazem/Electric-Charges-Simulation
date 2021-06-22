@@ -18,10 +18,16 @@ WrapperParticle::~WrapperParticle() {
 
 void WrapperParticle::update() {
     const hz::Vector2& position = particle.getPosition();
-    const hz::Vector2 a = particle.getAceleration().unit();
-    const double angle = a.angle();
-    this->acelerationArrow->setPosition({position.x, position.y});
-    this->acelerationArrow->setAngle(90 - angle);
+    
+
+    particleShape.setPosition( (float) position.x, (float) position.y);
+
+    if(acelerationArrow != nullptr) {
+        const hz::Vector2 a = particle.getAceleration().unit();
+        const double angle = a.angle();
+        this->acelerationArrow->setPosition(particleShape.getPosition());
+        this->acelerationArrow->setAngle(90 - angle);
+    }
 }
 
 void WrapperParticle::updateShape() {
@@ -45,6 +51,8 @@ void WrapperParticle::bind(const Particle& particle, Arrow* acelerationArrow) {
     updateShape();
 
 }
+
+
 
 Arrow* WrapperParticle::getShape() const {
     return this->acelerationArrow;
