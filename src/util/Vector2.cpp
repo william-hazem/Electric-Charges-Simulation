@@ -46,7 +46,7 @@ namespace hz {
 
     }
     
-    float Vector2::operator*(const Vector2& v) const {
+    dec Vector2::operator*(const Vector2& v) const {
         return this->x * v.x + this->y * v.y;
     }
     
@@ -75,7 +75,7 @@ namespace hz {
     }
 
 
-    double Vector2::angle() const {
+    dec Vector2::angle() const {
 
         // return atan2(this->x, this->y);
         return atan2(this->x, this->y) * 180 / PI;
