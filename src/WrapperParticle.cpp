@@ -1,48 +1,69 @@
 #include <Hazem/WrapperParticle.hpp>
 
 WrapperParticle::WrapperParticle() {
-    this->arrow = nullptr;
-    this->particle = nullptr;
+    this->acelerationArrow = nullptr;
 }
-WrapperParticle::WrapperParticle(Particle& particle, Arrow& arrow, unsigned int id) {
 
+WrapperParticle::WrapperParticle(Particle& particle, Arrow& acelerationArrow, unsigned int id) {
     this->particle = &particle;
-    this->arrow = &arrow;
+    this->acelerationArrow = &acelerationArrow;
     this->id = id;
     this->update();
 }
 
 WrapperParticle::~WrapperParticle() {
     this->particle = 0;
-    this->arrow = 0;
+    this->acelerationArrow = 0;
 }
 
 void WrapperParticle::update() {
-    const hz::Vector2& position = particle->getPosition();
-    const hz::Vector2 a = particle->getAceleration().unit();
+    const hz::Vector2& position = particle.getPosition();
+    const hz::Vector2 a = particle.getAceleration().unit();
     const double angle = a.angle();
-    this->arrow->setPosition({position.x, position.y});
-    this->arrow->setAngle(90 - angle);
-
-    
-    // printf("Angle = %.5f\n", angle);
-    // printf("ARROW= (%.5f, %.5f)\n", a.x, a.y);
-    // printf("POSITION = (%.5f, %.5f)\n",position.x, position.y);
+    this->acelerationArrow->setPosition({position.x, position.y});
+    this->acelerationArrow->setAngle(90 - angle);
 }
 
-void WrapperParticle::bind(Particle* particle, Arrow* arrow) {
-    this->arrow = arrow;
+void WrapperParticle::updateShape() {
+    if(particle.getSignal()) {
+        particle.setCharge(Particle::elementary_charge);
+        particleShape.setFillColor(sf::Color::Green);
+    }
+    else {
+        particle.setCharge(Particle::elementary_charge * -1);
+        particleShape.setFillColor(sf::Color::Red);
+    }
+    particleShape.setRadius(Particle::radius);
+    particleShape.setOrigin(sf::Vector2f(Particle::radius, Particle::radius));
+}
+
+
+void WrapperParticle::bind(const Particle& particle, Arrow* acelerationArrow) {
+    this->acelerationArrow = acelerationArrow;
     this->particle = particle;
-}
-
-void WrapperParticle::bindRender(sf::RenderTarget* render) {
     
+    updateShape();
+
 }
 
 Arrow* WrapperParticle::getShape() const {
-    return this->arrow;
+    return this->acelerationArrow;
 }
+
+const Particle& WrapperParticle::getParticle() const {
+    return particle;
+}
+
+const sf::CircleShape& WrapperParticle::getParticleShape() const {
+    return particleShape;
+}
+
 
 void WrapperParticle::setId(unsigned int id) {
     this->id = id;
 }
+
+// void WrapperParticle::create(const Arrow& arrow) {
+//     if(this->particleShape == 0)
+//         this->particleShape = new Arrow(arrow);
+// }
