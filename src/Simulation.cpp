@@ -6,21 +6,19 @@ Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 40.f, 1.5f);
 
 Simulation::Simulation() {}
 
-Simulation::Simulation(uint64_t width, uint64_t height)
+Simulation::Simulation(uint32_t width, uint32_t height)
 {
     this->width = width;
     this->height = height;
     this->init();
 
-    size_t size = 5;
+    size_t size = 200;
     
-
     srand(std::time(0));
     for(size_t i = 0; i < size; i++) {
         hz::Vector2 position; 
         position.x = rand() % (width - 100) + 100;
         position.y = rand() % (height - 100) + 100;
-        printf("[i] Force: %f,%f\n", position.x,position.y);
         if((int) rand() % 2) {
             this->addParticle(true, position);
         }
@@ -28,7 +26,6 @@ Simulation::Simulation(uint64_t width, uint64_t height)
             this->addParticle(false, position);
         }
     }
-    printf("\n\n");
 
     this->window.create({width, height}, "Simulation");
 }
@@ -42,6 +39,7 @@ void Simulation::init() {
     this->running = false;
     this->showForces = false;
     this->showEField = false;
+    this->pause = false;
 
 
     if (Hz::loadDefaultFont(&font) ) {
@@ -116,39 +114,15 @@ void Simulation::run() {
         }
 
         window.clear();
-        
-        
 
-        // this->particleSystem.draw();
-        // for(i = 0; i < particles_size; i++) {
-        //     std::vector<Particle> temp_particle = this->particles;
-        //     temp_particle.erase(temp_particle.begin() + i);
-        //     particles[i].move(temp_particle);
+        this->particleSystem.draw();
 
-        //     // wAceleration[i].update();
-
-        //     // window.draw(*wAceleration[i].getShape());
-        //     window.draw(particles[i].getShape());
-        // }
-        
-
-    // printf("size: %d\n", particleSystem.size());
-    for(size_t i = 0; i < particleSystem.size(); i++) {
-        const WrapperParticle &p = particleSystem.getWrapper(i);
-        printf("[i] Force: %f,%f\n", p.getParticle()->getPosition().x,p.getParticle()->getPosition().y);
-        // sf::CircleShape c = p->getShape();
-        
-    }
-    char c;
-    scanf("%c", &c);
-    printf("\n\n");
+        particleSystem.draw();
 
         this->drawTextInfo();
-        // window.draw(c);
 
         window.display();
         
-
     }
     printf("OUTTING\n");
     this->clear();
@@ -156,16 +130,18 @@ void Simulation::run() {
 // !RUN
 
 void Simulation::addParticle(bool proton, const hz::Vector2& position) {
+    size_t size = particles.size();
+    
     Particle newParticle(proton);
+    WrapperParticle newWrapper;
+
     newParticle.setPosition(position);
     particles.push_back(newParticle);
-    
-    Particle p = particles.back();
-    WrapperParticle newWrapper;
-    newWrapper.bind(&particles.back(), &(defaultArrow));
+
+    newWrapper.bind(newParticle, &(defaultArrow));
     wp.push_back(newWrapper);
-    WrapperParticle w = wp.back();
-    particleSystem.addParticle(wp.back());
+    
+    particleSystem.addParticle(wp[size]);
 }
 
 

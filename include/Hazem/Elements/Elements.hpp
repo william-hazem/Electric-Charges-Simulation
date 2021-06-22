@@ -1,6 +1,7 @@
 #ifndef HAZEM_ELEMENTS
 #define HAZEM_ELEMENTS
 
+#include "ElementBase.hpp"
 #include "Text.hpp"
 
 
