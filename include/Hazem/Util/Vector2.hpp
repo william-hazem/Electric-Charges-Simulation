@@ -4,7 +4,7 @@
 
 
 namespace hz {
-    typedef double dec;
+    typedef float dec;
 
     class Vector2
     {
@@ -23,7 +23,7 @@ namespace hz {
         Vector2 unit() const;
 
         Vector2 operator+(const Vector2&) const;
-        float operator*(const Vector2&) const;
+        dec operator*(const Vector2&) const;
         Vector2 operator-(const Vector2&) const;
         
         Vector2 operator*(const dec a) const;
@@ -32,7 +32,7 @@ namespace hz {
         void operator+=(const Vector2&);
 
         void setAngle(const dec);
-        double angle() const;
+        dec angle() const;
 
         
     };
