@@ -27,7 +27,7 @@ Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompoun
 
 void Arrow::drawArrow() {
     // Total Lenght = L + l;
-    float l = 0.3 * length;
+    float l = 0.45 * length;
     float L = length - l;
     // h is proporcional to lenght
     float h = tickness * l / length + 4.f;
@@ -38,8 +38,6 @@ void Arrow::drawArrow() {
     this->drawRectangle(position.x - origin.x , position.y - tickness/2 - origin.y,
                         position.x + L - origin.x, position.y + tickness/2 - origin.y);
     this->swap();
-    
-    
     
     sf::Vector2f v[3];
     v[0] = {x, position.y - origin.y};

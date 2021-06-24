@@ -6,7 +6,7 @@
 const float Simulation::Q0 = 1.f;
 
 Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 40.f, 1.5f);
-Arrow Simulation::defaultFieldArrow = Arrow(sf::Vector2f(0, 0), 40.f, 1.5f);
+Arrow Simulation::defaultFieldArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.f);
 
 Simulation::Simulation() {}
 
@@ -15,11 +15,9 @@ Simulation::Simulation(uint32_t width, uint32_t height)
     this->width = width;
     this->height = height;
 
-    
-
     this->init();
 
-    size_t size = 1;
+    size_t size = 5;
     
     srand(std::time(0));
     for(size_t i = 0; i < size; i++) {
@@ -48,9 +46,9 @@ void Simulation::init() {
     this->showForces = false;
     this->showEField = false;
     this->pause = false;
-    this->stopParticle = false;
+    this->stopParticle = true;
 
-    EFIELD_OFFSET = 150;
+    EFIELD_OFFSET = 75;
     arrowStyle = arrowDrawingStyle::NONE;
     // INITIALIZE FONT
     if (Hz::loadDefaultFont(&font) ) {
@@ -77,7 +75,6 @@ bool Simulation::initEField() {
             EFIELD_VECTOR.push_back(sf::Vector2f(x, y));
     return true;
 }
-
 
 void Simulation::clear() {
     this->shapes.clear();
