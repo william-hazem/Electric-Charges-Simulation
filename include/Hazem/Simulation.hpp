@@ -14,8 +14,15 @@ class Simulation
 {
 
 private:
+    enum arrowDrawingStyle {
+        NONE = 0,
+        ACELERAION,
+        EFIELD
+    }ADS;
+
     uint64_t width, height;
     static Arrow defaultArrow;
+    static Arrow defaultFieldArrow;
     bool running;
     bool showForces;
     bool showEField;
@@ -24,6 +31,7 @@ private:
     bool stopParticle;
     
     int EFIELD_OFFSET;
+    arrowDrawingStyle arrowStyle;
     std::vector<sf::Vector2f> EFIELD_VECTOR;
     sf::Font font;
 
@@ -61,9 +69,6 @@ public:
     bool start();
     void clear();
     void run();
-    friend class EventHandler;  
-    sf::Vector2f operator=(const hz::Vector2&);
-    hz::Vector2 operator=(const sf::Vector2f&);
 };
 
 #endif //!HAZEM_SIMULATION

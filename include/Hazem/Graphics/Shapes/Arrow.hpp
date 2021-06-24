@@ -15,6 +15,7 @@ protected:
 public:
     Arrow();
     Arrow(sf::Vector2f position, float length, float tickness);
+    ~Arrow();
     void fillArea();
 
     // void setAngle(const double);

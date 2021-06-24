@@ -12,6 +12,8 @@ Arrow::Arrow() : ShapeCompound() {
     this->tickness = .1f;
 }
 
+Arrow::~Arrow() {}
+
 Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompound(primitives_parts, 3, 0, 0) {
     
     this->position = position;

@@ -6,6 +6,7 @@
 const float Simulation::Q0 = 1.f;
 
 Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 40.f, 1.5f);
+Arrow Simulation::defaultFieldArrow = Arrow(sf::Vector2f(0, 0), 40.f, 1.5f);
 
 Simulation::Simulation() {}
 
@@ -50,7 +51,7 @@ void Simulation::init() {
     this->stopParticle = false;
 
     EFIELD_OFFSET = 150;
-
+    arrowStyle = arrowDrawingStyle::NONE;
     // INITIALIZE FONT
     if (Hz::loadDefaultFont(&font) ) {
         printf("[INIT] Font Loaded \n");
@@ -131,6 +132,24 @@ void Simulation::run() {
                     stopParticle = !stopParticle;
                     printf("[MODE CHANGED] stopParticle: %b\n", stopParticle);
                 }
+                else if(event.key.code == sf::Keyboard::F) {
+                    switch (arrowStyle)
+                    {
+                    case arrowDrawingStyle::NONE:
+                        arrowStyle = arrowDrawingStyle::ACELERAION;
+                        break;
+                    case arrowDrawingStyle::ACELERAION:
+                        arrowStyle = arrowDrawingStyle::EFIELD;
+                        break;
+                    case arrowDrawingStyle::EFIELD:
+                        arrowStyle = arrowDrawingStyle::NONE;
+                        break;
+
+                    default:
+                        break;
+                    }
+                    printf("[MODE CHANGED] stopParticle: %b\n", stopParticle);
+                }
             }
         }
 
@@ -140,7 +159,7 @@ void Simulation::run() {
 
 
         //DRAWING
-        drawField();
+        if(arrowStyle == arrowDrawingStyle::EFIELD) drawField();
         particleSystem.draw();
         drawTextInfo();
         
@@ -194,15 +213,12 @@ void Simulation::drawField() {
     Particle q0;
     hz::Vector2 f;
 
-    Arrow arrow({0, 0}, 20, 5);
-    arrow.setColor(sf::Color::White);
-
     size_t i, size = EFIELD_VECTOR.size();
     for(i = 0; i < size; i++) {
-        arrow.setPosition(EFIELD_VECTOR[i]);
+        defaultFieldArrow.setPosition(EFIELD_VECTOR[i]);
         q0.setPosition(hz::Vector2(EFIELD_VECTOR[i].x, EFIELD_VECTOR[i].y));
         f = particleSystem.calcE_Force(q0);
-        arrow.setAngle(90 - f.angle());
-        window.draw(arrow);     
+        defaultFieldArrow.setAngle(90 - f.angle());
+        window.draw(defaultFieldArrow);     
     }
 }
