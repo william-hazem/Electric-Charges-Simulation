@@ -21,20 +21,6 @@ Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompoun
     this->origin = {0, 0};
     this->angle = 0;
     this->drawArrow();
-    // this->drawRectangle(position.x, position.y, length, tickness);
-    // this->swap();
-    
-    // sf::Vector2f v[3];
-    // v[0] = {100, 100};
-    // v[1] = {100, 200};
-    // v[2] = {200, 100};
-    // this->drawTriangle(v);
-    // this->color = sf::Color::Red;
-    // v[1] = {100, 0};
-    // this->swap();
-    // this->drawTriangle(v);
-    
-
 }
 
 void Arrow::drawArrow() {
@@ -58,7 +44,7 @@ void Arrow::drawArrow() {
     v[1] = {x + l, position.y - origin.y};
     v[2] = {x, y + h};
     this->drawTriangle(v);
-    // this->color = sf::Color::Red;
+
     v[2] = {x, position.y - tickness/2 - origin.y - h};
     this->swap();
     this->drawTriangle(v);
@@ -72,6 +58,5 @@ void Arrow::update() {
 
 
 void Arrow::fillArea() {
-
 
 }

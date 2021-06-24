@@ -7,7 +7,7 @@ ShapeBase::ShapeBase() {
 
 }
 
-ShapeBase::ShapeBase(sf::Vector2f origin) {
+ShapeBase::ShapeBase(const sf::Vector2f& origin) {
     this->name = "";
     this->origin = origin;
     //this->setFillColor (sf::Color::White);
@@ -22,7 +22,7 @@ void ShapeBase::draw(sf::RenderTarget& render, sf::RenderStates state) {
  *   SETTERS
 **/
 
-void ShapeBase::setColor(sf::Color color) {
+void ShapeBase::setColor(const sf::Color& color) {
     this->color = color;
     this->update();
 }
@@ -37,16 +37,16 @@ void ShapeBase::setColor(sf::Color color) {
 
 // }
 
-void ShapeBase::setOrign(sf::Vector2f origin) {
+void ShapeBase::setOrign(const sf::Vector2f& origin) {
     this->origin = origin;
     this->update();
 }
 
-void ShapeBase::setPosition(sf::Vector2f position) {
+void ShapeBase::setPosition(const sf::Vector2f& position) {
     this->position = position;
     this->update();
 }
 
-void ShapeBase::setAngle(double angle) {
+void ShapeBase::setAngle(const double& angle) {
     this->angle = angle;
 }

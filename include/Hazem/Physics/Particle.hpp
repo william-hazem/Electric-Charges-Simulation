@@ -7,7 +7,6 @@
 
 class Particle
 {
-    // friend class ParticleShape;
 private:
     void init(bool);
     double charge;
@@ -21,10 +20,10 @@ protected:
 
 public:
     static const double radius;
-    static double elementary_charge;
-    static double eletron_mass;
-    static double proton_mass;
-    static double E0;
+    static const double elementary_charge;
+    static const double eletron_mass;
+    static const double proton_mass;
+    static const double E0;
 
     bool signal;
     
@@ -33,7 +32,7 @@ public:
     ~Particle();
     
     void setPosition(const hz::Vector2&);
-    void setAceleration(hz::Vector2);
+    void setAceleration(const hz::Vector2&);
     const hz::Vector2& getPosition() const;
     const double& getCharge() const;
     void setCharge(double);

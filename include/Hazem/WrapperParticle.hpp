@@ -34,6 +34,9 @@ public:
     Arrow* getShape() const;
     const sf::CircleShape& getParticleShape() const;
     const Particle& getParticle() const;
+
+    
+
 };
 
 

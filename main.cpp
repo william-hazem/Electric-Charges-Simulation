@@ -7,9 +7,19 @@
 #include <OpenGL.hpp>
 
 int main() {
+    try
+    {
+        Simulation simulation(1200, 900);
+        simulation.run();
+    }
+    catch(std::exception e) {
+        printf("[ERROR] %s\n", e.what());
+        printf("[ERROR] %d\n", __LINE__);
+            
+    }
     
-    Simulation simulation(1200, 900);
-    simulation.run();
+    
 
+    
     return 0;
 }

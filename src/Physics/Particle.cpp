@@ -2,14 +2,14 @@
 
 const double Particle::radius = 15.f;
 
-double Particle::elementary_charge  = 1.602176634e-19;
+double const Particle::elementary_charge  = 1.602176634e-19;
 // double Particle::elementary_charge  = 1.602176634;
 // double Particle::eletron_mass       = 9.10938356e-31;
-double Particle::eletron_mass       = 9.10938356;
+double const Particle::eletron_mass       = 9.10938356;
 // double Particle::proton_mass        = 1.6726219e-27;
-double Particle::proton_mass        = 1.6726219;
-double Particle::E0                 = 8.85e-12;
-double PI = 8.85e-12;
+double const Particle::proton_mass        = 1.6726219;
+double const Particle::E0                 = 8.85e-12;
+double const PI = 8.85e-12;
 
 Particle::Particle() {
     this->signal = true;
@@ -39,7 +39,7 @@ void Particle::setPosition(const hz::Vector2& position) {
     this->position = position;
 }
 
-void Particle::setAceleration(hz::Vector2 aceleration) {
+void Particle::setAceleration(const hz::Vector2& aceleration) {
     this->aceleration = aceleration;
 }
 

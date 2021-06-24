@@ -19,11 +19,9 @@ public:
     
     void createParticle(const WrapperParticle&);
     const WrapperParticle& getWrapper(const unsigned int&) const;
-
+    const Particle& getParticle(const unsigned int&) const;
     size_t size() const;
-
-
-
+    hz::Vector2 calcE_Force(const Particle&) const;
     void update();
     void draw();
 };

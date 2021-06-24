@@ -19,18 +19,16 @@ protected:
     sf::Color color;
     double angle;
 public:
-    ShapeBase(/* args */);
-    explicit ShapeBase(sf::Vector2f position);
-    // virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
+    ShapeBase();
+    explicit ShapeBase(const sf::Vector2f& position);
 
-
-    void setOrign(sf::Vector2f);
-    void setPosition(sf::Vector2f);
-    void setAngle(double);
+    void setOrign(const sf::Vector2f&);
+    void setPosition(const sf::Vector2f&);
+    void setAngle(const double&);
     /// \brief Absolute color rgb
     /// \param int 32 bits unsigned or a hexadecimal number 0xRRGGBB
     // void setColor(uint32_t);
-    void setColor(sf::Color);
+    void setColor(const sf::Color&);
 };
 
 

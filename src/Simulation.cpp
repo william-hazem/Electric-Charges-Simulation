@@ -1,6 +1,9 @@
 #include <Hazem/Simulation.hpp>
 
 #include <cmath>
+#include <exception>
+
+const float Simulation::Q0 = 1.f;
 
 Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 40.f, 1.5f);
 
@@ -10,9 +13,12 @@ Simulation::Simulation(uint32_t width, uint32_t height)
 {
     this->width = width;
     this->height = height;
+
+    
+
     this->init();
 
-    size_t size = 200;
+    size_t size = 1;
     
     srand(std::time(0));
     for(size_t i = 0; i < size; i++) {
@@ -36,12 +42,16 @@ Simulation::~Simulation()
 }
 
 void Simulation::init() {
+    // INITIALIZE VAR
     this->running = false;
     this->showForces = false;
     this->showEField = false;
     this->pause = false;
+    this->stopParticle = false;
 
+    EFIELD_OFFSET = 150;
 
+    // INITIALIZE FONT
     if (Hz::loadDefaultFont(&font) ) {
         printf("[INIT] Font Loaded \n");
     }
@@ -52,8 +62,21 @@ void Simulation::init() {
 
     window.setFramerateLimit(30);
     particleSystem.bindRender(&window);
+
+    // INITIALIZE COMPONENTS
+    initEField();
     
 }
+
+bool Simulation::initEField() {
+    float x, y;
+    EFIELD_VECTOR.clear();
+    for(x = EFIELD_OFFSET; x < width; x += EFIELD_OFFSET)
+        for(y = EFIELD_OFFSET; y < height; y += EFIELD_OFFSET)
+            EFIELD_VECTOR.push_back(sf::Vector2f(x, y));
+    return true;
+}
+
 
 void Simulation::clear() {
     this->shapes.clear();
@@ -66,15 +89,6 @@ void Simulation::run() {
     c.setOrigin({10, 10});
 
     size_t i, particles_size = this->particles.size();
-    
-    Arrow defaultArrow(sf::Vector2f(0, 0), 40.f, 3.5f);
-    
-    // std::vector<WrapperParticle> wAceleration(particles_size);
-
-    // for(i = 0; i < particles_size; i++) { 
-    //     wAceleration[i].bind( particles.data() + i, &(defaultArrow));
-    //     wAceleration[i].setId(i);
-    // }
 
     Arrow arrow(sf::Vector2f(600, 300), 40.f, 1.5f);
     arrow.setOrign({20, 10});
@@ -109,22 +123,32 @@ void Simulation::run() {
                     printf("Mx, My = %d, %d\n", mouse.x - 600, mouse.y - 300);
                     printf("------------------\n");
                 }
+            
 
+            } //!Mouuse
+            if(event.type == sf::Event::KeyPressed) {
+                if(event.key.code == sf::Keyboard::Space) {
+                    stopParticle = !stopParticle;
+                    printf("[MODE CHANGED] stopParticle: %b\n", stopParticle);
+                }
             }
         }
 
         window.clear();
+        // UPDATE
+        if(!stopParticle) particleSystem.update();
 
-        this->particleSystem.draw();
 
+        //DRAWING
+        drawField();
         particleSystem.draw();
-
-        this->drawTextInfo();
+        drawTextInfo();
+        
+        
 
         window.display();
         
     }
-    printf("OUTTING\n");
     this->clear();
 }
 // !RUN
@@ -136,32 +160,49 @@ void Simulation::addParticle(bool proton, const hz::Vector2& position) {
     WrapperParticle newWrapper;
 
     newParticle.setPosition(position);
-    particles.push_back(newParticle);
 
-    newWrapper.bind(newParticle, &(defaultArrow));
-    wp.push_back(newWrapper);
+    newWrapper.bind(newParticle, new Arrow(defaultArrow));
     
-    particleSystem.addParticle(wp[size]);
+    particleSystem.addParticle(newWrapper);
 }
 
-
-
 void Simulation::drawTextInfo() {
+    const sf::Color fontColor = sf::Color::Black;
+
+    // Box Size
     float w = 300.f, marginx = 20.f;
     float h = 200.f, marginy = 25.f;
     float x = this->width - w;
     float y = this->height - h;
 
+    // Box def
     sf::RectangleShape rec(sf::Vector2f{w, h});
     rec.setPosition(sf::Vector2f{x, y});
     rec.setFillColor(sf::Color(255, 255, 255, 128));
     window.draw(rec);
 
+    //Particle count
     Text text;
     text.setFont(this->font);
     text.setPosition({x + marginx, y + marginy});
-    text.setFillColor(sf::Color::Black);
-    text.setString("Particles: " + std::to_string(particles.size()));
+    text.setFillColor(fontColor);
+    text.setString("Particles: " + std::to_string(particleSystem.size()));
     window.draw(text);
+}
 
+void Simulation::drawField() {
+    Particle q0;
+    hz::Vector2 f;
+
+    Arrow arrow({0, 0}, 20, 5);
+    arrow.setColor(sf::Color::White);
+
+    size_t i, size = EFIELD_VECTOR.size();
+    for(i = 0; i < size; i++) {
+        arrow.setPosition(EFIELD_VECTOR[i]);
+        q0.setPosition(hz::Vector2(EFIELD_VECTOR[i].x, EFIELD_VECTOR[i].y));
+        f = particleSystem.calcE_Force(q0);
+        arrow.setAngle(90 - f.angle());
+        window.draw(arrow);     
+    }
 }
