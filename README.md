@@ -5,4 +5,4 @@ An electric charges simulation, based in knowledge learned studying Physics and 
 ![Simulation in Action](assets/img/demonstration.png)
 
 
-## [Contact Me](william.martins@ee.ufcg.edu.br)
+## [Contact Me](assets/img/demostration.png)
