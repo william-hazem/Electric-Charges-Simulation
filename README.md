@@ -5,4 +5,4 @@ An electric charges simulation, based in knowledge learned studying Physics and 
 ![Simulation in Action](assets/img/demonstration.png)
 
 
-## [Contact Me](assets/img/demostration.png)
+## [Contact Me](../assets/img/demostration.png)
