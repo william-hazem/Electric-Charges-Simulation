@@ -2,7 +2,7 @@
 
 An electric charges simulation, based in knowledge learned studying Physics and Programmation
 
-![Simulation in Action](assets/img/demonstration.png)
+![Simulation in Action](../assets/img/demostration.png)
 
 
-## [Contact Me](../assets/img/demostration.png)
+[Contact Me](william.martins@ee.ufcg.edu.br)
