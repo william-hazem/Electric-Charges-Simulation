@@ -2,42 +2,39 @@
 #define HAZEM_SIMULATION
 
 #include <vector>
+#include <map>
+
 #include <Hazem/Graphics/graphics.hpp>
 #include <Hazem/Physics/Particle.hpp>
 #include <Hazem/HandlerParticle.hpp>
 #include <Hazem/Util/Singleton.hpp>
 #include <Hazem/Elements/Elements.hpp>
+
 // #include "Events/EventHandler.hpp"
 
 
 class Simulation
 {
-
-private:
-    enum arrowDrawingStyle {
+    enum arrowDrawType {
         NONE = 0,
         ACELERAION,
         EFIELD
     }ADS;
 
-    uint64_t width, height;
+    uint32_t width, height;
     static Arrow defaultArrow;
     static Arrow defaultFieldArrow;
-    bool running;
-    bool showForces;
-    bool showEField;
-    bool showAceleration;
-    bool pause;
-    bool stopParticle;
     
-    int EFIELD_OFFSET;
-    arrowDrawingStyle arrowStyle;
+    bool running;
+    bool pause;                 //pause simulation
+    bool stopParticle;          //Stop particle drawing system
+    
+    arrowDrawType arrowStyle;   //Select witch vector style will be draw
+    int EFIELD_OFFSET;          //Offset between each vector on eletric field
     std::vector<sf::Vector2f> EFIELD_VECTOR;
+    std::vector<std::string> vecUpdateQuery;
     sf::Font font;
-
-    static const float Q0;
-
-    std::vector<ElementBase> elements;
+    std::map<const char*, Text> mText;
     std::vector<ShapeBase*> shapes;
     std::vector<Particle> particles;
     std::vector<WrapperParticle> wp;
@@ -46,7 +43,7 @@ private:
     // INITIALIZE FUNCTIONS
     void init();
     bool initEField();
-    void initText();
+    bool initText();
     void initElement();
 
     void drawTextInfo();
@@ -57,7 +54,7 @@ private:
     void addParticle(bool, const hz::Vector2&);
 
     void updateParticles();
-
+    
     void drawField();
 public:
     
