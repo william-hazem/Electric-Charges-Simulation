@@ -31,7 +31,9 @@ class Simulation
     
     arrowDrawType arrowStyle;   //Select witch vector style will be draw
     int EFIELD_OFFSET;          //Offset between each vector on eletric field
+    std::vector<Arrow> vEfield;
     std::vector<sf::Vector2f> EFIELD_VECTOR;
+    std::vector<float> EFIELD_ANGLE;
     std::vector<std::string> vecUpdateQuery;
     sf::Font font;
     std::map<const char*, Text> mText;
@@ -54,7 +56,8 @@ class Simulation
     void addParticle(bool, const hz::Vector2&);
 
     void updateParticles();
-    
+    void updateField();
+
     void drawField();
 public:
     

@@ -14,7 +14,7 @@ Simulation::Simulation(uint32_t width, uint32_t height)
 
     this->init();
 
-    size_t size = 5;
+    size_t size = 0;
     
     srand(std::time(0));
     for(size_t i = 0; i < size; i++) {
@@ -43,7 +43,7 @@ void Simulation::init() {
     this->pause = false;
     this->stopParticle = true;
 
-    EFIELD_OFFSET = 55;
+    EFIELD_OFFSET = 25;
     arrowStyle = arrowDrawType::NONE;
     // INITIALIZE FONT
     if (Hz::loadDefaultFont(&font) ) {
@@ -60,18 +60,35 @@ void Simulation::init() {
     particleSystem.bindRender(&window);
 
     // INITIALIZE COMPONENTS
+
     initEField();
+    printf("[INIT] EFIELD setting up \n");
     initText();
+    printf("[INIT] Texts setting up \n");
     
     printf("[INIT] Sucefully initialized\n");
 }
 
 bool Simulation::initEField() {
     float x, y;
+    int n = height / EFIELD_OFFSET - 1;
     EFIELD_VECTOR.clear();
-    for(x = EFIELD_OFFSET; x < width; x += EFIELD_OFFSET)
-        for(y = EFIELD_OFFSET; y < height; y += EFIELD_OFFSET)
-            EFIELD_VECTOR.push_back(sf::Vector2f(x, y));
+    for(x = EFIELD_OFFSET; x < width; x += EFIELD_OFFSET) {
+        for(y = EFIELD_OFFSET; y < height; y += EFIELD_OFFSET) {
+            EFIELD_VECTOR.push_back(sf::Vector2f(x, y)); 
+        }
+    }   
+    int i = 0;
+    for(sf::Vector2f& vec : EFIELD_VECTOR) {
+        vEfield.emplace_back(Arrow(sf::Vector2f(0, 0), EFIELD_OFFSET, 1.5f));
+        vEfield[i].setPosition(sf::Vector2f(EFIELD_VECTOR[i]));
+        i++;
+    }
+    // int i = x / EFIELD_OFFSET - 1;
+    //         int j = y / EFIELD_OFFSET - 1;
+    //         vEfield.push_back(defaultFieldArrow);
+    //         vEfield[j + i*n].setPosition(sf::Vector2f(x, y));
+    EFIELD_ANGLE.resize(EFIELD_VECTOR.size());
     return true;
 }
 
@@ -195,13 +212,20 @@ void Simulation::run() {
         }
 
         window.clear();
+        
         // UPDATE
-        if(!stopParticle) particleSystem.update();
-        
+        static sf::Clock updateClock;
+        if(updateClock.getElapsedTime() > sf::milliseconds(50)) {
+            if(arrowStyle == 2) updateField();
+            if(!stopParticle) particleSystem.update();
 
-        //DRAWING
-        
-        if(arrowStyle == 2) drawField();
+            updateClock.restart();
+        }
+
+        //DRAWING        
+        if(arrowStyle == 2) {     
+            drawField();
+        }
 
         particleSystem.draw();
         drawTextInfo();
@@ -275,15 +299,23 @@ void Simulation::drawTextInfo() {
 }
 
 void Simulation::drawField() {
-    Particle q0;
-    hz::Vector2 f;
-
-    size_t i, size = EFIELD_VECTOR.size();
-    for(i = 0; i < size; i++) {
-        defaultFieldArrow.setPosition(EFIELD_VECTOR[i]);
-        q0.setPosition(hz::Vector2(EFIELD_VECTOR[i].x, EFIELD_VECTOR[i].y));
-        f = particleSystem.calcE_Force(q0);
-        defaultFieldArrow.setAngle(90 - f.angle());
-        window.draw(defaultFieldArrow);     
+    for(Arrow& arrow : vEfield) {
+        window.draw(arrow);
     }
+}
+
+/// UPDATE FUNCTIONS
+void Simulation::updateField() {
+    if(particleSystem.size() == 0) 
+        return;
+    Particle q0;
+    size_t size = vEfield.size(), i;
+    for(i = 0; i < size; i++) {
+        Arrow& arrow = vEfield[i];
+        q0.setPosition(hz::Vector2(arrow.getPosition().x, arrow.getPosition().y));
+        hz::Vector2 f = particleSystem.calcE_Force(q0);
+        EFIELD_ANGLE[i] = f.angle();
+        arrow.setAngle(90 - f.angle());
+    }
+    
 }
