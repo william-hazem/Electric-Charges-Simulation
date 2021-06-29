@@ -21,7 +21,7 @@ protected:
 public:
     ShapeBase();
     explicit ShapeBase(const sf::Vector2f& position);
-
+    ~ShapeBase() {};
     void setOrign(const sf::Vector2f&);
     void setPosition(const sf::Vector2f&);
     void setAngle(const double&);
@@ -29,6 +29,9 @@ public:
     /// \param int 32 bits unsigned or a hexadecimal number 0xRRGGBB
     // void setColor(uint32_t);
     void setColor(const sf::Color&);
+
+    // GETTERS
+    const sf::Vector2f& getPosition() const;
 };
 
 

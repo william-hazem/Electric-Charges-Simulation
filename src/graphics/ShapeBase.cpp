@@ -50,3 +50,8 @@ void ShapeBase::setPosition(const sf::Vector2f& position) {
 void ShapeBase::setAngle(const double& angle) {
     this->angle = angle;
 }
+
+// GETTERS
+const sf::Vector2f& ShapeBase::getPosition() const {
+    return position;
+}
