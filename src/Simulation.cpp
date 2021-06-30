@@ -71,24 +71,13 @@ void Simulation::init() {
 
 bool Simulation::initEField() {
     float x, y;
-    int n = height / EFIELD_OFFSET - 1;
-    EFIELD_VECTOR.clear();
     for(x = EFIELD_OFFSET; x < width; x += EFIELD_OFFSET) {
         for(y = EFIELD_OFFSET; y < height; y += EFIELD_OFFSET) {
-            EFIELD_VECTOR.push_back(sf::Vector2f(x, y)); 
+            vEfield.push_back(Arrow(sf::Vector2f(x, y),
+                                EFIELD_OFFSET, 1.5f));
         }
     }   
-    int i = 0;
-    for(sf::Vector2f& vec : EFIELD_VECTOR) {
-        vEfield.emplace_back(Arrow(sf::Vector2f(0, 0), EFIELD_OFFSET, 1.5f));
-        vEfield[i].setPosition(sf::Vector2f(EFIELD_VECTOR[i]));
-        i++;
-    }
-    // int i = x / EFIELD_OFFSET - 1;
-    //         int j = y / EFIELD_OFFSET - 1;
-    //         vEfield.push_back(defaultFieldArrow);
-    //         vEfield[j + i*n].setPosition(sf::Vector2f(x, y));
-    EFIELD_ANGLE.resize(EFIELD_VECTOR.size());
+
     return true;
 }
 
@@ -121,6 +110,9 @@ bool Simulation::initText() {
     WarningText.setElement_Name("warning_mode");
     mText.emplace(WarningText.getElement_Name(), WarningText);
 
+    //Field intensity on mouse position
+    newText.setElement_Name("efield_abs");
+    mText.emplace(newText.getElement_Name(), newText);
 
     
     return true;
@@ -128,7 +120,6 @@ bool Simulation::initText() {
 
 void Simulation::clear() {
     this->shapes.clear();
-    this->particles.clear();
 }
 
 void Simulation::run() {
@@ -142,7 +133,7 @@ void Simulation::run() {
     c.setPosition({900, 300});
     c.setOrigin({10, 10});
 
-    size_t i, particles_size = this->particles.size();
+    size_t particles_size = 0;
 
     Arrow arrow(sf::Vector2f(600, 300), 40.f, 1.5f);
     arrow.setOrign({20, 10});
@@ -152,15 +143,20 @@ void Simulation::run() {
     
     
     while(this->running) {
-        particles_size = this->particles.size();
+        particles_size = particleSystem.size();
         sf::Event event;
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed) {
                 this->running = false;
                 window.close();
             }
-
-            if(event.type == sf::Event::MouseButtonPressed) {
+            else if (event.type == sf::Event::Resized) {
+                sf::FloatRect visibleArea(0, 0,
+                            event.size.width, event.size.height);
+                window.setView(sf::View(visibleArea));
+                /// \todo Callback a function to rezise the vector Field or limite the drawing area
+            }
+            else if(event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mouse = sf::Mouse::getPosition() - window.getPosition();
                 hz::Vector2 position;
                 position.x = mouse.x;
@@ -208,6 +204,9 @@ void Simulation::run() {
                     }
                     printf("[MODE CHANGED] stopParticle: %b\n", stopParticle);
                 }
+                else if(event.key.code == sf::Keyboard::R) {
+                    particleSystem.clear();
+                }
             }
         }
 
@@ -215,14 +214,13 @@ void Simulation::run() {
         
         // UPDATE
         static sf::Clock updateClock;
-        if(updateClock.getElapsedTime() > sf::milliseconds(50)) {
+        if(!stopParticle) particleSystem.update();
+        if(updateClock.getElapsedTime() > sf::milliseconds(100)) {
             if(arrowStyle == 2) updateField();
-            if(!stopParticle) particleSystem.update();
-
             updateClock.restart();
         }
 
-        //DRAWING        
+        //DRAWING
         if(arrowStyle == 2) {     
             drawField();
         }
@@ -239,8 +237,6 @@ void Simulation::run() {
 // !RUN
 
 void Simulation::addParticle(bool proton, const hz::Vector2& position) {
-    size_t size = particles.size();
-    
     Particle newParticle(proton);
     WrapperParticle newWrapper;
 
@@ -254,6 +250,7 @@ void Simulation::addParticle(bool proton, const hz::Vector2& position) {
 void Simulation::drawTextInfo() {
     const sf::Color fontColor = sf::Color::Black;
     Text text;
+    Text* ptr;
 
     // Box Size
     float w = 300.f, marginx = 20.f;
@@ -274,6 +271,14 @@ void Simulation::drawTextInfo() {
     text.setFillColor(fontColor);
     text.setString("Particles: " + std::to_string(particleSystem.size()));
     window.draw(text);
+
+    /// efield_abs
+    Particle q;  
+    q.setPosition(hz::Vector2(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
+    ptr = &mText.at("efield_abs");
+    ptr->setPosition({x + marginx, y + marginy + 30});
+    ptr->setString("Field intensity:" + std::to_string(particleSystem.calcE_Force(q).abs()));
+    window.draw(*ptr);
 
     if(stopParticle) 
         window.draw(mText.at("paused"));
@@ -308,14 +313,33 @@ void Simulation::drawField() {
 void Simulation::updateField() {
     if(particleSystem.size() == 0) 
         return;
+    hz::Vector2 max, min;
     Particle q0;
     size_t size = vEfield.size(), i;
+    std::vector<hz::Vector2> vec;
+    vec.reserve(size);
     for(i = 0; i < size; i++) {
         Arrow& arrow = vEfield[i];
         q0.setPosition(hz::Vector2(arrow.getPosition().x, arrow.getPosition().y));
         hz::Vector2 f = particleSystem.calcE_Force(q0);
-        EFIELD_ANGLE[i] = f.angle();
+        if(max.abs() < f.abs())
+            max = f;
+        if(min.abs() > f.abs() || i == 0)
+            min = f;
+        vec[i] = f;
+        // EFIELD_ANGLE[i] = f.angle();
         arrow.setAngle(90 - f.angle());
+    }
+    float fmax = max.abs(),
+        fmin = min.abs(), scale = 255/fmax;
+    for(i = 0; i < size; i++) {
+        
+        if(vec[i].abs() <= (fmax-fmin)/10) {
+            sf::Color color = sf::Color::White;
+            color.a = vec[i].abs() * scale;
+            vEfield[i].setColor(color);
+        }
+        else vEfield[i].setColor(sf::Color::Blue);
     }
     
 }

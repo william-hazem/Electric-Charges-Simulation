@@ -32,14 +32,11 @@ class Simulation
     arrowDrawType arrowStyle;   //Select witch vector style will be draw
     int EFIELD_OFFSET;          //Offset between each vector on eletric field
     std::vector<Arrow> vEfield;
-    std::vector<sf::Vector2f> EFIELD_VECTOR;
-    std::vector<float> EFIELD_ANGLE;
+    
     std::vector<std::string> vecUpdateQuery;
     sf::Font font;
     std::map<const char*, Text> mText;
     std::vector<ShapeBase*> shapes;
-    std::vector<Particle> particles;
-    std::vector<WrapperParticle> wp;
     HandlerParticle particleSystem;
     
     // INITIALIZE FUNCTIONS
@@ -68,7 +65,11 @@ public:
 
     bool start();
     void clear();
+    /// \brief Reset the particles system
+    void reset();
     void run();
+
+    
 };
 
 #endif //!HAZEM_SIMULATION
