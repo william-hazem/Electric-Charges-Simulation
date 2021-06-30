@@ -20,19 +20,16 @@ const Particle& HandlerParticle::getParticle(const unsigned int& index) const {
 
 hz::Vector2 HandlerParticle::calcE_Force(const Particle& pi) const {
     size_t i, size = this->size();
-    std::vector<Particle> particles;
+    std::vector<const Particle*> particles;
 
     for(i = 0; i < size; i++) {
-        particles.push_back(handler[i].particle);
+        particles.push_back(&handler[i].getParticle());
     }
-
-    hz::Vector2 f, temp;
+    
+    hz::Vector2 f;
     for(i = 0; i < size; i++) {
-        temp = pi.getForce(particles[i]);
-        f.x += temp.x;
-        f.y += temp.y;
+        f += pi.getForce(*particles[i]);
     }
-    particles.clear();
     return f;
 }
 
@@ -46,6 +43,10 @@ void HandlerParticle::createParticle(const WrapperParticle& wrapper) {
     this->handler.push_back(
         wrapper
     );
+}
+
+void HandlerParticle::clear() {
+    handler.clear();
 }
 
 

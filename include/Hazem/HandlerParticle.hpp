@@ -18,6 +18,9 @@ public:
     void bindRender(sf::RenderTarget*);
     
     void createParticle(const WrapperParticle&);
+    
+    void clear();
+    
     const WrapperParticle& getWrapper(const unsigned int&) const;
     const Particle& getParticle(const unsigned int&) const;
     size_t size() const;
