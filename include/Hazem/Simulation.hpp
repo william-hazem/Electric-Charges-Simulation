@@ -4,8 +4,8 @@
 #include <vector>
 #include <map>
 
-#include <Hazem/Graphics/graphics.hpp>
-#include <Hazem/Physics/Particle.hpp>
+#include <Hazem/graphics.hpp>
+#include <Hazem/physics.hpp>
 #include <Hazem/HandlerParticle.hpp>
 #include <Hazem/Util/Singleton.hpp>
 #include <Hazem/Elements/Elements.hpp>

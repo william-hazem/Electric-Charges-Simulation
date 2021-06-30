@@ -1,5 +1,5 @@
-#ifndef HAZEM_PARTICLE
-#define HAZEM_PARTICLE
+#ifndef HAZEM_PHYSICS_PARTICLE_H
+#define HAZEM_PHYSICS_PARTICLE_H
 
 #include <SFML/Graphics.hpp>
 #include <Hazem/Util/Vector2.hpp>
@@ -44,6 +44,7 @@ public:
     hz::Vector2 getAceleration() const;
 
     /// \brief Calculate force between two particles
+    hz::Vector2 calcForce(const Particle&) const;
     hz::Vector2 calcAceleration(const Particle&) const;
     hz::Vector2 calcAceleration(std::vector<Particle>&) const;
     

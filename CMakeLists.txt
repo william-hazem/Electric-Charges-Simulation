@@ -58,5 +58,6 @@ set_target_properties(
     PROPERTIES
     CXX_STANDARD 17
 )
+target_compile_features(Field PRIVATE cxx_std_17)
 
 

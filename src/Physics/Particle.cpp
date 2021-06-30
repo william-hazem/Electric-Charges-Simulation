@@ -105,6 +105,10 @@ hz::Vector2 Particle::getAceleration() const {
     return this->aceleration;
 }
 
+hz::Vector2 Particle::calcForce(const Particle& particle) const {
+    
+}
+
 hz::Vector2 Particle::calcAceleration(const Particle& particle) const {
     hz::Vector2 force(this->getForce(particle));
     // hz::dec x = force.x;

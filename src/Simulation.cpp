@@ -82,9 +82,9 @@ bool Simulation::initEField() {
 }
 
 bool Simulation::initText() {
-    sf::Color cDefaultText(sf::Color::White),
+    const sf::Color cDefaultText(sf::Color::White),
         cWarningText(sf::Color::Red);
-    
+
     Text newText;
     newText.setFillColor(cDefaultText);
     Text WarningText;
@@ -112,9 +112,10 @@ bool Simulation::initText() {
 
     //Field intensity on mouse position
     newText.setElement_Name("efield_abs");
+    newText.setFillColor(sf::Color::Black);
+    newText.setScale({0.8, 0.8});
     mText.emplace(newText.getElement_Name(), newText);
 
-    
     return true;
 }
 
@@ -277,7 +278,8 @@ void Simulation::drawTextInfo() {
     q.setPosition(hz::Vector2(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
     ptr = &mText.at("efield_abs");
     ptr->setPosition({x + marginx, y + marginy + 30});
-    ptr->setString("Field intensity:" + std::to_string(particleSystem.calcE_Force(q).abs()));
+    ptr->setString("Field intensity:" + std::to_string(particleSystem.calcE_Force(q).abs()) +
+        " [N/C]");
     window.draw(*ptr);
 
     if(stopParticle) 
