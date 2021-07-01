@@ -67,6 +67,10 @@ namespace hz {
         this->y += v.y;
     }
 
+    void Vector2::operator-=(const Vector2& v) {
+        x -= v.x;
+        y -= v.y;
+    }
 
     void Vector2::setAngle(const dec angle) {
         double rad = angle * PI / 180;
