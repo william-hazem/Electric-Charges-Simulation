@@ -6,10 +6,7 @@ namespace hz {
 
     const double PI = 3.14159265359;
 
-    Vector2::Vector2() {
-        this->x = 0;
-        this->y = 0;
-    }
+    Vector2::Vector2() : x(0), y(0) {}
 
     Vector2::Vector2(const dec& x, const dec& y) {
         this->x = x;
@@ -24,7 +21,6 @@ namespace hz {
     Vector2::Vector2(dec x, dec y, dec sx, dec sy) {
         this->x = x / sx;
         this->y = y / sy;
-
     }
 
     dec Vector2::abs() const {
@@ -35,19 +31,15 @@ namespace hz {
 
     Vector2 Vector2::unit() const {
         double abs = this->abs();
-        return Vector2 (
-            this->x / abs,
-            this->y / abs
-        );
+        return Vector2 (x / abs, y / abs);
     }
 
     Vector2 Vector2::operator+(const Vector2& v) const {
-        return Vector2(this->x + v.x, this->y + v.y);
-
+        return Vector2(x + v.x, y + v.y);
     }
     
     dec Vector2::operator*(const Vector2& v) const {
-        return this->x * v.x + this->y * v.y;
+        return x * v.x + y * v.y;
     }
     
     Vector2 Vector2::operator*(dec a) const {
@@ -63,8 +55,8 @@ namespace hz {
     }
 
     void Vector2::operator+=(const Vector2& v) {
-        this->x += v.x;
-        this->y += v.y;
+        x += v.x;
+        y += v.y;
     }
 
     void Vector2::operator-=(const Vector2& v) {
