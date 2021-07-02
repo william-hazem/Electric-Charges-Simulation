@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 
-Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 30.f, 2.5f);
+Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.5f);
 Arrow Simulation::defaultFieldArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.f);
 
 Simulation::Simulation(uint32_t width, uint32_t height)
@@ -14,7 +14,7 @@ Simulation::Simulation(uint32_t width, uint32_t height)
 
     this->init();
 
-    size_t size = 0;
+    size_t size = 2;
     
     srand(std::time(0));
     for(size_t i = 0; i < size; i++) {
@@ -53,6 +53,9 @@ void Simulation::init() {
         printf("[ERROR] FAILED TO INIT FONT\n");
   
     sf::View view;
+    // sf::FloatRect visibleArea(-width/2, -height/2,
+    //                         width/2, height/2);
+    //             window.setView(sf::View(visibleArea));
     // view.zoom(1.5f);
     // this->window.setView(view);
 
@@ -128,16 +131,8 @@ void Simulation::run() {
     //Setting up Threads
     sf::Thread thread1(&Simulation::drawField, &*this);
     int drawFieldCount(0);
-    int opacityFallout = 255;
-
-    sf::CircleShape c(10);
-    c.setPosition({900, 300});
-    c.setOrigin({10, 10});
 
     size_t particles_size = 0;
-
-    Arrow arrow(sf::Vector2f(600, 300), 40.f, 1.5f);
-    arrow.setOrign({20, 10});
 
     if(window.isOpen())
         this->running = true;
@@ -159,28 +154,19 @@ void Simulation::run() {
             }
             else if(event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mouse = sf::Mouse::getPosition() - window.getPosition();
-                hz::Vector2 position;
-                position.x = mouse.x;
-                position.y = mouse.y;
                 if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    this->addParticle(true, position);
-                    printf("Mx, My = %d, %d\n", mouse.x, mouse.y);
-                    printf("Mx, My = %d, %d\n", mouse.x - 600, mouse.y - 300);
-                    printf("------------------\n");
-                } else
-                if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-                    this->addParticle(false, position);
-                    printf("Mx, My = %d, %d\n", mouse.x, mouse.y);
-                    printf("Mx, My = %d, %d\n", mouse.x - 600, mouse.y - 300);
-                    printf("------------------\n");
+                    this->addParticle(true, hz::Vector2(mouse.x, mouse.y));
+                    printf("[info] Particle Added: xy = (%d, %d)\n", mouse.x, mouse.y);
+                } 
+                else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+                    this->addParticle(false, hz::Vector2(mouse.x, mouse.y));
+                    printf("[info] Particle Added: xy = (%d, %d)\n", mouse.x, mouse.y);
                 }
-            
-
             } //!Mouuse
-            if(event.type == sf::Event::KeyPressed) {
+            else if(event.type == sf::Event::KeyPressed) {
                 if(event.key.code == sf::Keyboard::Space) {
                     stopParticle = !stopParticle;
-                    printf("[MODE CHANGED] stopParticle: %b\n", stopParticle);
+                    printf("[MODE CHANGED] stopParticle: %d\n", stopParticle);
                 }
                 else if(event.key.code == sf::Keyboard::F) {
                     Text& t = mText.at("warning_mode");
@@ -188,22 +174,22 @@ void Simulation::run() {
                     switch (arrowStyle)
                     {
                     case arrowDrawType::NONE:
-                        arrowStyle = arrowDrawType::ACELERAION;
-                        t.setString("MODE: Aceleration Vectors");
+                        arrowStyle = arrowDrawType::ACCELERATION;
+                        t.setString("[info]: Aceleration Vectors");
                         break;
-                    case arrowDrawType::ACELERAION:
+                    case arrowDrawType::ACCELERATION:
                         arrowStyle = arrowDrawType::EFIELD;
-                        t.setString("MODE: Field Vectors");
+                        t.setString("[info]: Field Vectors");
                         break;
                     case arrowDrawType::EFIELD:
                         arrowStyle = arrowDrawType::NONE;
-                        t.setString("MODE: NONE");
+                        t.setString("[info]: NONE");
                         break;
 
                     default:
                         break;
                     }
-                    printf("[MODE CHANGED] stopParticle: %b\n", stopParticle);
+                    printf("[info] particles stoped: %s\n", stopParticle);
                 }
                 else if(event.key.code == sf::Keyboard::R) {
                     particleSystem.clear();
@@ -213,27 +199,49 @@ void Simulation::run() {
 
         window.clear();
         
-        // UPDATE
-        static sf::Clock updateClock;
-        if(!stopParticle) particleSystem.update();
-        if(updateClock.getElapsedTime() > sf::milliseconds(100)) {
-            if(arrowStyle == 2) updateField();
-            updateClock.restart();
-        }
+        /// UPDATE
+        // static sf::Clock updateClock;
+        // if(!stopParticle) particleSystem.update();
+        // if(updateClock.getElapsedTime() > sf::milliseconds(100)) {
+        //     sf::Clock clock;
+        //     if(arrowStyle == 2) updateField();
+        //     std::cout << "update time: " << clock.getElapsedTime().asMilliseconds()
+        //         << std::endl;
+        //     updateClock.restart();
+        // }
+        bool updateArrow = false, updateField = false, bordered = true;
+        particleSystem.update(
+            !stopParticle,  //update particles
+            updateArrow,    //update arrows
+            updateField,    //update field
+            vEfield,        //field arrows - lvalue
+            1e-3,           //time t
+            bordered        //active inside box simulation
+        );
 
-        //DRAWING
-        if(arrowStyle == 2) {     
+        /// DRAWING
+        if(bordered)
+            drawBorder();
+        if(arrowStyle == 2) { 
+            sf::Clock clock;
             drawField();
+            std::cout << "time draw: " << clock.getElapsedTime().asMilliseconds() 
+                << std::endl;
         }
+        particleSystem.draw(
+            arrowStyle == arrowDrawType::ACCELERATION ? true : false
+        );
 
-        particleSystem.draw();
+        Arrow a = defaultArrow;
+        static float angle(0);
+        a.setPosition({300, 300});
+        a.setAngle(angle++);
+        window.draw(a);
         drawTextInfo();
-        opacityFallout--;
-
+        
         window.display();
         
     }
-    this->clear();
 }
 // !RUN
 
@@ -243,7 +251,7 @@ void Simulation::addParticle(bool proton, const hz::Vector2& position) {
 
     newParticle.setPosition(position);
 
-    newWrapper.bind(newParticle, new Arrow(defaultArrow));
+    newWrapper.bind(newParticle);
     
     particleSystem.addParticle(newWrapper);
 }
@@ -274,12 +282,14 @@ void Simulation::drawTextInfo() {
     window.draw(text);
 
     /// efield_abs
-    Particle q;  
+    Particle q(true);  
     q.setPosition(hz::Vector2(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
     ptr = &mText.at("efield_abs");
     ptr->setPosition({x + marginx, y + marginy + 30});
-    ptr->setString("Field intensity:" + std::to_string(particleSystem.calcE_Force(q).abs()) +
-        " [N/C]");
+    ptr->setString("Field intensity:" + 
+        std::to_string(particleSystem.calcEForce(q).abs() / q.getCharge()) +
+        " [N/C]\n(" + std::to_string(q.getPosition().x) + " ," +
+        std::to_string(q.getPosition().y) +")");
     window.draw(*ptr);
 
     if(stopParticle) 
@@ -323,7 +333,7 @@ void Simulation::updateField() {
     for(i = 0; i < size; i++) {
         Arrow& arrow = vEfield[i];
         q0.setPosition(hz::Vector2(arrow.getPosition().x, arrow.getPosition().y));
-        hz::Vector2 f = particleSystem.calcE_Force(q0);
+        hz::Vector2 f = particleSystem.calcE_Force_fake(q0);
         if(max.abs() < f.abs())
             max = f;
         if(min.abs() > f.abs() || i == 0)
@@ -344,4 +354,13 @@ void Simulation::updateField() {
         else vEfield[i].setColor(sf::Color::Blue);
     }
     
+}
+
+/// Draw functions
+
+void Simulation::drawBorder() {
+    sf::RectangleShape border(sf::Vector2f(width, height));
+    border.setOutlineThickness(-1.5f);
+    border.setFillColor(sf::Color::Transparent);
+    window.draw(border);
 }

@@ -24,9 +24,18 @@ public:
     const WrapperParticle& getWrapper(const unsigned int&) const;
     const Particle& getParticle(const unsigned int&) const;
     size_t size() const;
-    hz::Vector2 calcE_Force(const Particle&) const;
+    hz::Vector2 calcE_Force_fake(const Particle&) const;
+    hz::Vector2 calcEForce(const Particle&) const;
     void update();
-    void draw();
+    //first     -> update particle?
+    //secon     -> update arrow?
+    //third     -> update field?
+    void update(const bool&, const bool&, const bool&, const std::vector<Arrow>&,
+        const float&, const bool&);
+    void draw(const bool&);
+
+    /// Operators
+    WrapperParticle& operator[](const size_t&);
 };
 
 #endif //!HAZEM_HANDLER_PARTICLE

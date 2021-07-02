@@ -11,7 +11,7 @@ class WrapperParticle
     friend class HandlerParticle;
 private:
     Particle particle;
-    Arrow* acelerationArrow;
+    Arrow arrowAcceleration;
     sf::CircleShape particleShape;
     unsigned int id;
 
@@ -22,16 +22,14 @@ public:
     WrapperParticle(Particle&, Arrow&, unsigned int);
     ~WrapperParticle();
 
-    // void bind()
-    void bind(const Particle&, Arrow*);
-    // void create(const CircleShape&);
+    void bind(const Particle&);
 
     void setId(unsigned);
     /// \brief Update the position/angle of Particle and acelerationArrow shape
     void update();
 
     // GETTERS
-    Arrow* getShape() const;
+    const Arrow& getAccelerationArrow() const;
     const sf::CircleShape& getParticleShape() const;
     const Particle& getParticle() const;
 

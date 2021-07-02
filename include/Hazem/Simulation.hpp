@@ -17,7 +17,7 @@ class Simulation
 {
     enum arrowDrawType {
         NONE = 0,
-        ACELERAION,
+        ACCELERATION,
         EFIELD
     }ADS;
 
@@ -46,7 +46,7 @@ class Simulation
     void initElement();
 
     void drawTextInfo();
-
+    void drawBorder();
     /// \brief Add a new Particle
     /// \param set true for a proton
     /// and false for eletron, and set initial position

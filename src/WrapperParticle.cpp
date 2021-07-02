@@ -1,20 +1,16 @@
 #include <Hazem/WrapperParticle.hpp>
 
 WrapperParticle::WrapperParticle() {
-    this->acelerationArrow = nullptr;
 }
 
-WrapperParticle::WrapperParticle(Particle& particle, Arrow& acelerationArrow, unsigned int id) {
-    this->particle = &particle;
-    this->acelerationArrow = &acelerationArrow;
+WrapperParticle::WrapperParticle(Particle& particle, Arrow& arrowAcceleration, unsigned int id) {
+    this->particle = particle;
+    this->arrowAcceleration = arrowAcceleration;
     this->id = id;
     this->update();
 }
 
-WrapperParticle::~WrapperParticle() {
-    this->particle = 0;
-    this->acelerationArrow = 0;
-}
+WrapperParticle::~WrapperParticle() {}
 
 void WrapperParticle::update() {
 
@@ -22,12 +18,8 @@ void WrapperParticle::update() {
 
     particleShape.setPosition({(float) position.x, (float) position.y});
 
-    if(acelerationArrow != nullptr) {
-        const hz::Vector2 a = particle.getAceleration().unit();
-        const double angle = a.angle();
-        this->acelerationArrow->setPosition({(float) position.x, (float) position.y});
-        this->acelerationArrow->setAngle(90 - angle);
-    }
+    arrowAcceleration.setPosition(particleShape.getPosition());
+    arrowAcceleration.setAngle(90 - particle.getVelocity().angle());
 }
 
 void WrapperParticle::updateShape() {
@@ -44,18 +36,16 @@ void WrapperParticle::updateShape() {
 }
 
 
-void WrapperParticle::bind(const Particle& particle, Arrow* acelerationArrow) {
-    this->acelerationArrow = acelerationArrow;
+void WrapperParticle::bind(const Particle& particle) {
+    this->arrowAcceleration = Arrow(sf::Vector2f(0, 0), 30.f, 2.5f, sf::Color::Yellow);
     this->particle = particle;
     
     updateShape();
     update();
 }
 
-
-
-Arrow* WrapperParticle::getShape() const {
-    return this->acelerationArrow;
+const Arrow& WrapperParticle::getAccelerationArrow() const {
+    return arrowAcceleration;
 }
 
 const Particle& WrapperParticle::getParticle() const {
@@ -66,12 +56,6 @@ const sf::CircleShape& WrapperParticle::getParticleShape() const {
     return particleShape;
 }
 
-
 void WrapperParticle::setId(unsigned int id) {
     this->id = id;
 }
-
-// void WrapperParticle::create(const Arrow& arrow) {
-//     if(this->particleShape == 0)
-//         this->particleShape = new Arrow(arrow);
-// }
