@@ -14,7 +14,8 @@ Arrow::Arrow() : ShapeCompound() {
 
 Arrow::~Arrow() {}
 
-Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompound(primitives_parts, 3, 0, 0) {
+Arrow::Arrow(sf::Vector2f position, float length, float tickness,
+    sf::Color color) : ShapeCompound(primitives_parts, 3, 0, 0) {
     
     this->position = position;
     
@@ -23,6 +24,7 @@ Arrow::Arrow(sf::Vector2f position, float length, float tickness) : ShapeCompoun
     this->origin = {0, 0};
     this->angle = 0;
     this->drawArrow();
+    this->color = color;
 }
 
 void Arrow::drawArrow() {

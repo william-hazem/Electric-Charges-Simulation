@@ -14,7 +14,7 @@ protected:
     float tickness;
 public:
     Arrow();
-    Arrow(sf::Vector2f position, float length, float tickness);
+    Arrow(sf::Vector2f position, float length, float tickness, sf::Color = sf::Color::White);
     ~Arrow();
     void fillArea();
 
