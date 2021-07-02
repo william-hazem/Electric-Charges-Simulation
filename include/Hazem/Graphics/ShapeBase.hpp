@@ -7,8 +7,6 @@ static const char* const SHAPE_PREFIX = "shape_base";
 
 class ShapeBase : public sf::Drawable, public sf::Transformable
 {
-
-private:
     virtual void draw(sf::RenderTarget& render, sf::RenderStates state);
     virtual void update() = 0;
 

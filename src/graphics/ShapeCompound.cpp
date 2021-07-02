@@ -1,6 +1,6 @@
 #include <Hazem/Graphics/ShapeCompound.hpp>
 
-ShapeCompound::ShapeCompound() {
+ShapeCompound::ShapeCompound() : ShapeBase() {
     this->index = 0;
     this->s_size = 0;
     setOrign(sf::Vector2f(0, 0));
@@ -9,7 +9,7 @@ ShapeCompound::ShapeCompound() {
 
 
 ShapeCompound::ShapeCompound(sf::PrimitiveType* primitives, int nShapes, unsigned int* offset,
-unsigned int nVertex) {
+unsigned int nVertex) : ShapeBase() {
     this->index = 0;
     shapes = new sf::VertexBuffer[nShapes];
     setColor(sf::Color::White);

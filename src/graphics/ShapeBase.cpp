@@ -2,15 +2,18 @@
 
 ShapeBase::ShapeBase() {
     this->name = "";
-    this->origin = sf::Vector2f(0.f ,0.f);
-    //this->setFillColor (sf::Color::White);
-
+    origin = {0.0f, 0.0f};
+    position = {0.0f, 0.0f};
+    color = sf::Color::White;
+    angle = 0;
 }
 
 ShapeBase::ShapeBase(const sf::Vector2f& origin) {
     this->name = "";
     this->origin = origin;
-    //this->setFillColor (sf::Color::White);
+    position = {0.0f, 0.0f};
+    color = sf::Color::White;
+    angle = 0;
 }
 
 /// PRIVATE MEMBERS
@@ -49,6 +52,7 @@ void ShapeBase::setPosition(const sf::Vector2f& position) {
 
 void ShapeBase::setAngle(const double& angle) {
     this->angle = angle;
+    this->update();
 }
 
 // GETTERS
