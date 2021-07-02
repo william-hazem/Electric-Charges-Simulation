@@ -1,33 +1,51 @@
 #include <Hazem/Physics/Particle.hpp>
 
+#include <cmath>
+
+float map(float v, float xi, float xf, float yi, float yf) {
+    return yi + (v - xi) * (yf - yi) / (xf - xi);
+}
+
 const double Particle::radius = 15.f;
 
-double const Particle::elementary_charge  = 1.602176634e-19;
-// double Particle::elementary_charge  = 1.602176634;
-// double Particle::eletron_mass       = 9.10938356e-31;
-double const Particle::eletron_mass       = 9.10938356;
-// double Particle::proton_mass        = 1.6726219e-27;
-double const Particle::proton_mass        = 1.6726219;
-double const Particle::E0                 = 8.85e-12;
+float const Particle::fake_eletron_mass       = 9.10938356e-4;
+float const Particle::fake_proton_mass        = 1.6726219;
+
+double const Particle::elementary_charge  = 1.602176634e-19; // SI elementary charge
+double const Particle::eletron_mass       = 9.10938356e-31;  // SI eleton mass
+double const Particle::proton_mass        = 1.6726219e-27;   // SI proton mass
+double const Particle::E0                 = 8.85e-12;        // Vacuum permittivity
 double const PI = 8.85e-12;
 
 Particle::Particle() {
-    this->signal = true;
     init(true);
 }
 
-Particle::Particle(bool positive = true) {
-    this->signal = positive;
-    init(positive);
+Particle::Particle(const bool& proton) {
+    init(proton);
 }
 
-Particle::~Particle() {
-    
+Particle::Particle(const float& charge, const hz::Vector2& position) {
+    setCharge(charge);
+    setPosition(position);
 }
 
-void Particle::init(bool positive) {
-    
-    
+Particle::~Particle() {}
+
+void Particle::updateMass() {
+    if(signal)
+        mass = eletron_mass;
+    else
+        mass = proton_mass;
+}
+
+void Particle::init(bool proton) {
+    if(proton) {
+        setCharge(elementary_charge);
+    }
+    else {
+        setCharge(elementary_charge * -1);
+    }
 }
 
 
@@ -43,6 +61,10 @@ void Particle::setAceleration(const hz::Vector2& aceleration) {
     this->aceleration = aceleration;
 }
 
+void Particle::setVelocity(const hz::Vector2& velocity) {
+    this->velocity = velocity;
+}
+
 /**
  *  Getters
 **/ 
@@ -51,20 +73,29 @@ const bool& Particle::getSignal() const {
     return this->signal;
 }
 
+const double& Particle::getMass() const {
+    return mass;
+}
 
 const hz::Vector2& Particle::getPosition() const {
     return this->position;
 }
 
 void Particle::setCharge(double charge) {
-    this->charge;
+    this->charge = charge;
+    if(charge < 0.0f)
+        signal = true;
+    else 
+        signal = false;
+    updateMass();
+    
 }
 
 const double& Particle::getCharge() const {
     return this->charge;
 }
 
-hz::Vector2 Particle::getForce(const Particle& particle) const{
+hz::Vector2 Particle::getForce(const Particle& particle) const {
 
     hz::Vector2 r = this->position - particle.getPosition();
     hz::Vector2 forceVector(0, 0);
@@ -87,26 +118,25 @@ hz::Vector2 Particle::getForce(const Particle& particle) const{
 }
 
 hz::Vector2 Particle::getForce(std::vector<Particle>& particles) const{
-
-    hz::Vector2 total_force, fi;
-
-
-    for(Particle& i : particles) {
-        fi = this->getForce(i);
-        total_force.x += fi.x;
-        total_force.y += fi.y;
-        
-    }
-    // printf("Total_force - %.15f", total_force.x);
-    return total_force;
+    hz::Vector2 f;
+    for(Particle& i : particles)
+        f += this->getForce(i);
+    return f;
 }
 
-hz::Vector2 Particle::getAceleration() const {
-    return this->aceleration;
+const hz::Vector2& Particle::getAceleration() const {
+    return aceleration;
+}
+
+const hz::Vector2& Particle::getVelocity() const {
+    return velocity;
 }
 
 hz::Vector2 Particle::calcForce(const Particle& particle) const {
-    
+    hz::Vector2 r = position - particle.getPosition();    
+    return r.unit() * ( (charge * particle.getCharge()) 
+        / (4 * PI * E0) / pow(r.abs(), 2)
+    );
 }
 
 hz::Vector2 Particle::calcAceleration(const Particle& particle) const {
@@ -131,32 +161,27 @@ hz::Vector2 Particle::calcAceleration(std::vector<Particle>& particles) const {
 
 }
 
+bool Particle::isProton() const {
+    return !signal;
+}
+
+
 void Particle::move(std::vector<Particle>& particles) {
     
     hz::Vector2 f = this->getForce(particles);
-    
-    
     hz::Vector2 other, pos;
     bool canMove = true;
     double dist;
 
-    for(Particle i : particles) {
+    for(Particle& i : particles) {
         other = i.getPosition();
         pos = this->position - other;
         dist = pos.abs();
 
         // REACTION FORCE PHASE
         if(dist <= 2*radius) {
-            // canMove = false;
-            
-            
-            // Destribuição da força sobre o vetor r (FORÇA NORMAL)
-            // printf("Total Force: %.10f, %.10f\n", f.x, f.y);
             hz::Vector2 fi = this->getForce(i);
             hz::Vector2 normal = pos.unit() * (pos.unit() * fi);
-            // hz::Vector2 normal = (pos.unit()*(hz::dec)(pos.unit() * f));
-            // printf("Force: %.10f, %.10f\n", f.x, f.y);
-            // printf("NORMAL FORCE: %.10f, %.10f\n", normal.x, normal.y);
             f.x -= normal.x;
             f.y -= normal.y;
         }
@@ -164,6 +189,7 @@ void Particle::move(std::vector<Particle>& particles) {
     }
 
     hz::Vector2 a = f / eletron_mass;
+    
     this->setAceleration(hz::Vector2(a));
     // New Position
     double x = this->position.x + a.x;
