@@ -98,6 +98,8 @@ void HandlerParticle::update(const bool& upParticle, const bool& upArrow, const 
                     if( pos.abs() <= 2*ptrParticle->radius ) {
                         // Destribuição da força sobre o vetor r (FORÇA NORMAL)
                         f -= pos.unit() * (pos.unit() * fi);
+                        // totalmente ineslatico
+                        ptrParticle->setVelocity(hz::Vector2(0, 0));
                     }
                     
                     f += fi;
@@ -120,12 +122,12 @@ void HandlerParticle::update(const bool& upParticle, const bool& upArrow, const 
                 if(newPos.y <= 0 || newPos.y >= target->getSize().y) {
                     hz::Vector2 a = ptrParticle->getVelocity();
                     a.y = a.y * -1;
-                    ptrParticle->setVelocity(a * 0.9);
+                    ptrParticle->setVelocity(a);
                 }
                 if(newPos.x <= 0 || newPos.x >= target->getSize().x) {
                     hz::Vector2 a = ptrParticle->getVelocity();
                     a.x = a.x * -1;
-                    ptrParticle->setVelocity(a * 0.9);
+                    ptrParticle->setVelocity(a);
                 }
             }
             ptrParticle->setPosition(newPos);

@@ -1,7 +1,6 @@
 #include <Hazem/WrapperParticle.hpp>
 
-WrapperParticle::WrapperParticle() {
-}
+WrapperParticle::WrapperParticle() {}
 
 WrapperParticle::WrapperParticle(Particle& particle, Arrow& arrowAcceleration, unsigned int id) {
     this->particle = particle;
@@ -37,7 +36,7 @@ void WrapperParticle::updateShape() {
 
 
 void WrapperParticle::bind(const Particle& particle) {
-    this->arrowAcceleration = Arrow(sf::Vector2f(0, 0), 30.f, 2.5f, sf::Color::Yellow);
+    this->arrowAcceleration = Arrow(sf::Vector2f(0, 0), 35.f, 2.5f, sf::Color(0xFAE300CC));
     this->particle = particle;
     
     updateShape();
