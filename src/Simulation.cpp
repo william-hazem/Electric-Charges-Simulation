@@ -86,11 +86,10 @@ bool Simulation::initEField() {
 
 bool Simulation::initText() {
     const sf::Color cDefaultText(sf::Color::White),
-        cWarningText(sf::Color::Red);
+        cWarningText(sf::Color::Cyan);
 
-    Text newText;
+    Text newText, WarningText;
     newText.setFillColor(cDefaultText);
-    Text WarningText;
     WarningText.setFillColor(cWarningText);
 
     newText.setFont(font);
@@ -119,6 +118,14 @@ bool Simulation::initText() {
     newText.setScale({0.8, 0.8});
     mText.emplace(newText.getElement_Name(), newText);
 
+    //FPS 
+    Text fps = WarningText;
+    fps.setScale({0.55f, 0.55f});
+    fps.setPosition({50.f, height - 50.f});
+    fps.setElement_Name("fps");
+    fps.setOpacity(255);
+    mText.emplace(fps.getElement_Name(), fps);
+
     return true;
 }
 
@@ -128,12 +135,11 @@ void Simulation::clear() {
 
 void Simulation::run() {
 
-    //Setting up Threads
-    sf::Thread thread1(&Simulation::drawField, &*this);
-    int drawFieldCount(0);
-
     size_t particles_size = 0;
-
+    bool bordered = true;
+    sf::Clock updateClock, fpsClock;
+    float fpsCurrent, fpsLast = fpsClock.getElapsedTime().asSeconds();
+    float deltaTime = 1e-3;
     if(window.isOpen())
         this->running = true;
     
@@ -175,25 +181,34 @@ void Simulation::run() {
                     {
                     case arrowDrawType::NONE:
                         arrowStyle = arrowDrawType::ACCELERATION;
-                        t.setString("[info]: Aceleration Vectors");
+                        t.setString("[MODE]: Aceleration Vectors");
                         break;
                     case arrowDrawType::ACCELERATION:
                         arrowStyle = arrowDrawType::EFIELD;
-                        t.setString("[info]: Field Vectors");
+                        t.setString("[MODE]: Field Vectors");
                         break;
                     case arrowDrawType::EFIELD:
                         arrowStyle = arrowDrawType::NONE;
-                        t.setString("[info]: NONE");
+                        t.setString("[MODE]: NONE");
                         break;
 
                     default:
                         break;
                     }
-                    printf("[info] particles stoped: %s\n", stopParticle);
                 }
                 else if(event.key.code == sf::Keyboard::R) {
                     particleSystem.clear();
                 }
+                else if(event.key.code == sf::Keyboard::B) {
+                    bordered = !bordered;
+                    Text& t = mText.at("warning_mode");
+                    t.setOpacity(255);
+                    if(bordered) 
+                        t.setString("[MODE]: Bordered Simulation");
+                    else
+                        t.setString("[MODE]: No Border Simulation");
+                }
+                
             }
         }
 
@@ -209,15 +224,17 @@ void Simulation::run() {
         //         << std::endl;
         //     updateClock.restart();
         // }
-        bool updateArrow = false, updateField = false, bordered = true;
-        particleSystem.update(
-            !stopParticle,  //update particles
-            updateArrow,    //update arrows
-            updateField,    //update field
-            vEfield,        //field arrows - lvalue
-            1e-3,           //time t
-            bordered        //active inside box simulation
-        );
+        if(updateClock.getElapsedTime() >= sf::seconds(deltaTime)) {
+            bool updateArrow = false, updateField = false; 
+            particleSystem.update(
+                !stopParticle,  //update particles
+                updateArrow,    //update arrows
+                updateField,    //update field
+                vEfield,        //field arrows - lvalue
+                deltaTime,           //time t
+                bordered        //active bordered simulation
+            );
+        }
 
         /// DRAWING
         if(bordered)
@@ -232,13 +249,13 @@ void Simulation::run() {
             arrowStyle == arrowDrawType::ACCELERATION ? true : false
         );
 
-        Arrow a = defaultArrow;
-        static float angle(0);
-        a.setPosition({300, 300});
-        a.setAngle(angle++);
-        window.draw(a);
         drawTextInfo();
         
+        fpsCurrent = fpsClock.getElapsedTime().asSeconds();
+        Text& fpsText = mText.at("fps");
+        fpsText.setString("[FPS: " + std::to_string(int(1 / (fpsCurrent - fpsLast))) + "]");
+        fpsLast = fpsCurrent;
+        window.draw(fpsText);
         window.display();
         
     }
