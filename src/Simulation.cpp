@@ -224,11 +224,11 @@ void Simulation::run() {
         //         << std::endl;
         //     updateClock.restart();
         // }
+        bool updateField = arrowStyle == arrowDrawType::EFIELD; 
         if(updateClock.getElapsedTime() >= sf::seconds(deltaTime)) {
-            bool updateArrow = false, updateField = false; 
+            
             particleSystem.update(
                 !stopParticle,  //update particles
-                updateArrow,    //update arrows
                 updateField,    //update field
                 vEfield,        //field arrows - lvalue
                 deltaTime,           //time t

@@ -74,10 +74,10 @@ void HandlerParticle::update() {
 
 }
 
-void HandlerParticle::update(const bool& upParticle, const bool& upArrow, const bool& upField
-    , const std::vector<Arrow>& field, const float& t, const bool& bordered) {
+void HandlerParticle::update(const bool& upParticle, const bool& upField
+    , std::vector<Arrow>& field, const float& t, const bool& bordered) {
 
-    if(!(upParticle || upArrow || upField)) {
+    if(!(upParticle || upField)) {
         return; //not need update
     }
 
@@ -134,13 +134,15 @@ void HandlerParticle::update(const bool& upParticle, const bool& upArrow, const 
             handler[i].update();
         }// !for i loop 
     }// !updateParticle
-    
-    if(upArrow) {
 
-    }
-
-    if(upField) {
-
+    if(upField && size != 0) {
+        Particle p;
+        hz::Vector2 f;
+        for(Arrow& arrow : field) {
+            p.setPosition(hz::Vector2(arrow.getPosition().x, arrow.getPosition().y));
+            f = calcEForce(p);
+            arrow.setAngle(90.f - f.angle());
+        }
     }
 
 
