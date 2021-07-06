@@ -1,12 +1,14 @@
 #ifndef HAZEM_SINGLETON
 #define HAZEM_SINGLETON
 
+#include <mutex>
+
 namespace hz {
     class Singleton
     {
     private:
-        static Singleton *instace;
-
+        static Singleton *instance;
+        static std::mutex mutex;
     protected:
         Singleton();
         ~Singleton();
