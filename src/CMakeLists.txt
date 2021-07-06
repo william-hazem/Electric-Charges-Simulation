@@ -1,5 +1,5 @@
 add_library(  
-    lField
+    lField STATIC
     
     ##
     #   Graphics

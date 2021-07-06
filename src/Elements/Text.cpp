@@ -1,4 +1,4 @@
-#include <Hazem/Elements/Text.hpp>
+#include "Hazem/Elements/Text.hpp"
 
 Text::Text() : ElementBase(ElementBase::Type::Text) {
     init();

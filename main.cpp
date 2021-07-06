@@ -1,7 +1,5 @@
-#define WIN_32
-
+// #define WIN_32
 #include <iostream>
-
 #include <Hazem/Simulation.hpp>
 
 int main() {
