@@ -52,7 +52,7 @@ add_library(
 #
 #   ex: E-FIELD/include/foo.hpp
 ##
-target_include_directories(lField PUBLIC "${PROJECT_SOURCE_DIR}\\include")
+target_include_directories(lField PUBLIC "${PROJECT_SOURCE_DIR}\\include" "C:\\lib\\SFML-2.5.1\\include")
 
 ### Output lib file for <Project_DIR>/lib
 set(LIBRARY_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/lib")
