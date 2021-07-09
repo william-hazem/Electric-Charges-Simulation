@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <thread>
 
 #include <Hazem/graphics.hpp>
 #include <Hazem/physics.hpp>
@@ -15,6 +16,8 @@
 
 class Simulation
 {
+    static Simulation* instance;
+    static std::mutex mutex;
     enum arrowDrawType {
         NONE = 0,
         ACCELERATION,
@@ -25,9 +28,10 @@ class Simulation
     static Arrow defaultArrow;
     static Arrow defaultFieldArrow;
     
-    bool running;
+    bool running;               //running
     bool pause;                 //pause simulation
     bool stopParticle;          //Stop particle drawing system
+    bool hasUpdated;            //some change?
     
     arrowDrawType arrowStyle;   //Select witch vector style will be draw
     int EFIELD_OFFSET;          //Offset between each vector on eletric field
@@ -57,6 +61,7 @@ class Simulation
 
     void drawField();
 public:
+    static Simulation* getInstance();
     
     sf::RenderWindow window;
     Simulation();

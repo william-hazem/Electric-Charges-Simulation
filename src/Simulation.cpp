@@ -1,14 +1,24 @@
 #include <Hazem/Simulation.hpp>
-// #include "Hazem/Simulation.hpp"
+
 #include <cmath>
 #include <iostream>
+#include <thread>
+
+Simulation* Simulation::instance = nullptr;
+std::mutex Simulation::mutex;
 
 Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.5f);
 Arrow Simulation::defaultFieldArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.f);
 
+Simulation* Simulation::getInstance() {
+    std::lock_guard<std::mutex> lock(mutex);
+        if(instance == nullptr)
+            instance = new Simulation(1200, 900);
+        return instance;
+}
+
 Simulation::Simulation(uint32_t width, uint32_t height)
 {
-    
     this->width = width;
     this->height = height;
 
@@ -133,18 +143,25 @@ void Simulation::clear() {
     this->shapes.clear();
 }
 
+
 void Simulation::run() {
+    // Simulation* simulation = dynamic_cast<Simulation&>(instance);
+    // Simulation* a = (Simulation*) instance;
 
     size_t particles_size = 0;
     bool bordered = true;
+    bool hasUpdated = false;
+
     sf::Clock updateClock, fpsClock;
-    float fpsCurrent, fpsLast = fpsClock.getElapsedTime().asSeconds();
+    float fpsCurrent, fpsLast = fpsClock.getElapsedTime().asSeconds(),
+        updateTime, drawTime;
     float deltaTime = 1e-3;
     if(window.isOpen())
         this->running = true;
     
-    
+    // fieldThread.join();
     while(this->running) {
+        
         particles_size = particleSystem.size();
         sf::Event event;
         while(window.pollEvent(event)) {
@@ -168,6 +185,7 @@ void Simulation::run() {
                     this->addParticle(false, hz::Vector2(mouse.x, mouse.y));
                     printf("[info] Particle Added: xy = (%d, %d)\n", mouse.x, mouse.y);
                 }
+                hasUpdated = true;
             } //!Mouuse
             else if(event.type == sf::Event::KeyPressed) {
                 if(event.key.code == sf::Keyboard::Space) {
@@ -198,6 +216,7 @@ void Simulation::run() {
                 }
                 else if(event.key.code == sf::Keyboard::R) {
                     particleSystem.clear();
+                    hasUpdated = true;
                 }
                 else if(event.key.code == sf::Keyboard::B) {
                     bordered = !bordered;
@@ -214,36 +233,33 @@ void Simulation::run() {
 
         window.clear();
         
-        /// UPDATE
-        // static sf::Clock updateClock;
-        // if(!stopParticle) particleSystem.update();
-        // if(updateClock.getElapsedTime() > sf::milliseconds(100)) {
-        //     sf::Clock clock;
-        //     if(arrowStyle == 2) updateField();
-        //     std::cout << "update time: " << clock.getElapsedTime().asMilliseconds()
-        //         << std::endl;
-        //     updateClock.restart();
-        // }
         bool updateField = arrowStyle == arrowDrawType::EFIELD; 
+        if(hasUpdated && stopParticle)
+            updateField = true;
+
         if(updateClock.getElapsedTime() >= sf::seconds(deltaTime)) {
-            
-            particleSystem.update(
+            sf::Clock clock;
+            particleSystem.update (
                 !stopParticle,  //update particles
                 updateField,    //update field
                 vEfield,        //field arrows - lvalue
                 deltaTime,           //time t
                 bordered        //active bordered simulation
             );
+            // if(updateField)
+            //     this->updateField();
+            updateTime = clock.getElapsedTime().asMilliseconds();
         }
-
+        
         /// DRAWING
+
         if(bordered)
             drawBorder();
-        if(arrowStyle == 2) { 
+        if(particles_size && arrowStyle == 2) { 
             sf::Clock clock;
             drawField();
             std::cout << "time draw: " << clock.getElapsedTime().asMilliseconds() 
-                << std::endl;
+                << "\t|| update time: " << updateTime << std::endl;
         }
         particleSystem.draw(
             arrowStyle == arrowDrawType::ACCELERATION ? true : false
@@ -257,6 +273,8 @@ void Simulation::run() {
         fpsLast = fpsCurrent;
         window.draw(fpsText);
         window.display();
+
+        
         
     }
 }
@@ -333,7 +351,7 @@ void Simulation::drawTextInfo() {
 }
 
 void Simulation::drawField() {
-    for(Arrow& arrow : vEfield) {
+    for(Arrow& arrow : vEfield) if(arrow.getActive()) {
         window.draw(arrow);
     }
 }
@@ -343,6 +361,7 @@ void Simulation::updateField() {
     if(particleSystem.size() == 0) 
         return;
     hz::Vector2 max, min;
+    float mid(0);
     Particle q0;
     size_t size = vEfield.size(), i;
     std::vector<hz::Vector2> vec;
@@ -356,14 +375,14 @@ void Simulation::updateField() {
         if(min.abs() > f.abs() || i == 0)
             min = f;
         vec[i] = f;
-        // EFIELD_ANGLE[i] = f.angle();
+        mid += f.abs();
         arrow.setAngle(90 - f.angle());
     }
+    mid = mid / vEfield.size();
     float fmax = max.abs(),
-        fmin = min.abs(), scale = 255/fmax;
-    for(i = 0; i < size; i++) {
-        
-        if(vec[i].abs() <= (fmax-fmin)/10) {
+        fmin = min.abs(), scale = 255/mid;
+    for(i = 0; i < size; i++) {    
+        if(vec[i].abs() <= mid) {
             sf::Color color = sf::Color::White;
             color.a = vec[i].abs() * scale;
             vEfield[i].setColor(color);

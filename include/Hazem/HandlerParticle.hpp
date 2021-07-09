@@ -3,13 +3,17 @@
 
 #include <Hazem/WrapperParticle.hpp>
 #include <vector>
+#include <mutex>
 
 
 class HandlerParticle
 {
-private:
     std::vector<WrapperParticle> handler;
     sf::RenderTarget* target;
+
+    void updateField(Arrow*, Arrow*) const;
+    static std::mutex mutex;
+
 public:
     HandlerParticle();
     ~HandlerParticle();
@@ -26,7 +30,7 @@ public:
     size_t size() const;
     hz::Vector2 calcE_Force_fake(const Particle&) const;
     hz::Vector2 calcEForce(const Particle&) const;
-    void update();
+    // void update();
     //first     -> update particle?
     //secon     -> update arrow?
     //third     -> update field?

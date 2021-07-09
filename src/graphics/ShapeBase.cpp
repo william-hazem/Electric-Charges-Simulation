@@ -6,6 +6,7 @@ ShapeBase::ShapeBase() {
     position = {0.0f, 0.0f};
     color = sf::Color::White;
     angle = 0;
+    active = true;
 }
 
 ShapeBase::ShapeBase(const sf::Vector2f& origin) {
@@ -14,6 +15,7 @@ ShapeBase::ShapeBase(const sf::Vector2f& origin) {
     position = {0.0f, 0.0f};
     color = sf::Color::White;
     angle = 0;
+    active = true;
 }
 
 /// PRIVATE MEMBERS
@@ -55,7 +57,15 @@ void ShapeBase::setAngle(const double& angle) {
     this->update();
 }
 
+void ShapeBase::setActive(const bool& active) {
+    this->active = active;
+}
+
 // GETTERS
 const sf::Vector2f& ShapeBase::getPosition() const {
     return position;
+}
+
+const bool& ShapeBase::getActive() const {
+    return active;
 }

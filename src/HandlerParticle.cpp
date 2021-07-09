@@ -1,5 +1,9 @@
 #include <Hazem/HandlerParticle.hpp>
 
+#include <thread>
+
+std::mutex HandlerParticle::mutex;
+
 HandlerParticle::HandlerParticle() {}
 
 HandlerParticle::~HandlerParticle() {
@@ -42,36 +46,44 @@ void HandlerParticle::bindRender(sf::RenderTarget* target) {
 }
 
 void HandlerParticle::createParticle(const WrapperParticle& wrapper) {
-    this->handler.push_back(
-        wrapper
-    );
+    handler.push_back(wrapper);
 }
 
 void HandlerParticle::clear() {
     handler.clear();
 }
 
+void HandlerParticle::updateField(Arrow* begin, Arrow* end) const{
+    mutex.lock();
+    std::vector<WrapperParticle> handler = this->handler;
+    mutex.unlock();
 
-void HandlerParticle::update() {
-
-    size_t i, size(this->handler.size());
-    std::vector<Particle> mutableParticles;
-    std::vector<Particle> temp;
-    
-    // Get all particle inside Wrapper
-    for(i = 0; i < size; i++) {
-        mutableParticles.push_back(this->handler[i].getParticle());
+    Particle p;
+    printf("started updateField: %d\n", std::this_thread::get_id());
+    while(begin != end) {
+        hz::Vector2 f;  
+        p.setPosition(hz::Vector2(begin->getPosition().x, begin->getPosition().y));
+        // f = calcEForce(p);
+        for(WrapperParticle& wp : handler) {
+            f += p.calcForce(wp.particle);
+        }
+        begin->setAngle(90 - f.angle());
+        begin++;
     }
+}
 
-    // Move
-    for(i = 0; i < size; i++) {
-        temp = mutableParticles;
-        temp.erase(temp.begin() + i);
-        // Acessing by Friend Privilegy
-        handler[i].particle.move(temp);
-        handler[i].update();
+void updateField2(Arrow* begin, Arrow* end, std::vector<WrapperParticle> handler) {
+    Particle p;
+    // std::lock_guard<std::mutex> lock(mutex);
+    while(begin != end) {
+        hz::Vector2 f;  
+        p.setPosition(hz::Vector2(begin->getPosition().x, begin->getPosition().y));
+        for(WrapperParticle& wp : handler) {
+            f += p.calcForce(wp.getParticle());
+        }
+        begin->setAngle(90 - f.angle());
+        begin++;
     }
-
 }
 
 void HandlerParticle::update(const bool& upParticle, const bool& upField
@@ -135,14 +147,26 @@ void HandlerParticle::update(const bool& upParticle, const bool& upField
         }// !for i loop 
     }// !updateParticle
 
-    if(upField && size != 0) {
-        Particle p;
-        hz::Vector2 f;
-        for(Arrow& arrow : field) {
-            p.setPosition(hz::Vector2(arrow.getPosition().x, arrow.getPosition().y));
-            f = calcEForce(p);
-            arrow.setAngle(90.f - f.angle());
-        }
+    if(upField && size) {
+        size_t spo = field.size() / 4;
+        Arrow* begin1 = field.data();
+        Arrow* begin2 = field.data() + spo;
+        Arrow* begin3 = field.data() + 2*spo;
+        Arrow* begin4 = field.data() + 3*spo;
+        Arrow* end = field.data() + field.size();
+
+        // std::thread threads[] = {
+        //     std::thread(&HandlerParticle::updateField, *this, begin1, (begin1 + spo)),
+        //     std::thread(&HandlerParticle::updateField, *this, begin2, (begin2 + spo)),
+        //     std::thread(&HandlerParticle::updateField, *this, begin3, (begin3 + spo)),
+        //     std::thread(&HandlerParticle::updateField, *this, begin4, (begin4 + (field.size() - 3*spo)))
+
+        // };
+        // for(int i = 0; i < 4; i++) {
+        //     threads[i].join();
+        // }
+        std::thread t1(&HandlerParticle::updateField, this, begin1, end);
+        t1.join();
     }
 
 
