@@ -9,16 +9,22 @@
 class HandlerParticle
 {
     std::vector<WrapperParticle> handler;
+    std::vector<Arrow> efield;
     sf::RenderTarget* target;
-
+    
+    void startField(const uint32_t&, const sf::Vector2u& size);
+    void clearField();
     void updateField(Arrow*, Arrow*) const;
     static std::mutex mutex;
 
 public:
-    HandlerParticle();
+    HandlerParticle() {}
+    HandlerParticle(const uint32_t&, const sf::Vector2u&);
     ~HandlerParticle();
     
-    void addParticle(const WrapperParticle&);
+    /// add a particle by wrapper
+    void insertParticle(const WrapperParticle&);
+
     void bindRender(sf::RenderTarget*);
     
     void createParticle(const WrapperParticle&);

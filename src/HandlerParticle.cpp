@@ -4,13 +4,15 @@
 
 std::mutex HandlerParticle::mutex;
 
-HandlerParticle::HandlerParticle() {}
+HandlerParticle::HandlerParticle(const uint32_t& field_offset, const sf::Vector2u& screen_size) {
+    startField(field_offset, screen_size);
+}
 
 HandlerParticle::~HandlerParticle() {
     this->handler.clear();
 }
 
-void HandlerParticle::addParticle(const WrapperParticle& wrapper) {
+void HandlerParticle::insertParticle(const WrapperParticle& wrapper) {
     handler.push_back(wrapper);
 }
 
@@ -190,4 +192,19 @@ size_t HandlerParticle::size() const {
 /// Operator
 WrapperParticle& HandlerParticle::operator[](const size_t& index) {
     return handler[index];
+}
+
+/// other members
+
+void HandlerParticle::startField(const uint32_t& field_offset, const sf::Vector2u& size) {
+    float x, y;
+    for(x = field_offset; x < size.x; x += field_offset) {
+        for(y = field_offset; y < size.y; y += field_offset) {
+            efield.push_back(Arrow(sf::Vector2f(x, y), field_offset, 1.5f));
+        }
+    }   
+}
+
+void HandlerParticle::clearField() {
+    efield.clear();
 }
