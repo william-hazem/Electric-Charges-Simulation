@@ -28,24 +28,21 @@ class Simulation
     static Arrow defaultArrow;
     static Arrow defaultFieldArrow;
     
-    bool running;               //running
-    bool pause;                 //pause simulation
-    bool stopParticle;          //Stop particle drawing system
-    bool hasUpdated;            //some change?
+    bool running;               // running
+    bool pause;                 // pause simulation
+    bool stopParticle;          // Stop particle drawing system
+    bool hasUpdated;            // has Something changed and need update
     
-    arrowDrawType arrowStyle;   //Select witch vector style will be draw
-    int EFIELD_OFFSET;          //Offset between each vector on eletric field
-    std::vector<Arrow> vEfield;
+    arrowDrawType arrowStyle;   // Select the drawing mode
+    int EFIELD_OFFSET;          // Offset between each vector on eletric field
     
-    std::vector<std::string> vecUpdateQuery;
-    sf::Font font;
-    std::map<const char*, Text> mText;
+    sf::Font font;              // Default font 
+    std::map<const char*, Text> mText;  // Map to text elements 
     std::vector<ShapeBase*> shapes;
     HandlerParticle particleSystem;
     
     // INITIALIZE FUNCTIONS
     void init();
-    bool initEField();
     bool initText();
     void initElement();
 
@@ -55,11 +52,8 @@ class Simulation
     /// \param set true for a proton
     /// and false for eletron, and set initial position
     void addParticle(bool, const hz::Vector2&);
-
-    void updateParticles();
-    void updateField();
-
-    void drawField();
+    /// \brief Add a new Particle in a random position and random type
+    void addParticle();
 public:
     static Simulation* getInstance();
     
