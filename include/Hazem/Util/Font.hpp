@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics/Font.hpp>
 
-namespace Hz {
+namespace hz {
     
     /// \brief Load default font file
     /// \return A const font reference

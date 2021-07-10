@@ -1,6 +1,6 @@
 #include <Hazem/Util/Font.hpp>
 
-namespace Hz {
+namespace hz {
 
     bool loadDefaultFont(sf::Font* const font) {
         if(font == nullptr)
