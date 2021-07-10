@@ -19,6 +19,7 @@ private:
    
 public:
     WrapperParticle();
+    WrapperParticle(const Particle&);
     WrapperParticle(Particle&, Arrow&, unsigned int);
     ~WrapperParticle();
 

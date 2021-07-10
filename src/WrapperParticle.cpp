@@ -2,6 +2,11 @@
 
 WrapperParticle::WrapperParticle() {}
 
+WrapperParticle::WrapperParticle(const Particle& particle) {
+    this->particle = particle;
+    update();
+}
+
 WrapperParticle::WrapperParticle(Particle& particle, Arrow& arrowAcceleration, unsigned int id) {
     this->particle = particle;
     this->arrowAcceleration = arrowAcceleration;
