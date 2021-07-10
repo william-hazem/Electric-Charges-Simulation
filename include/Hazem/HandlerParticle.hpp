@@ -40,7 +40,7 @@ public:
     //first     -> update particle?
     //secon     -> update arrow?
     //third     -> update field?
-    void update(const bool&, const bool&, std::vector<Arrow>&,
+    void update(const bool&, const bool&,
         const float&, const bool&);
     void draw(const bool&);
 

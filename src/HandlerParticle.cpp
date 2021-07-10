@@ -88,8 +88,8 @@ void updateField2(Arrow* begin, Arrow* end, std::vector<WrapperParticle> handler
     }
 }
 
-void HandlerParticle::update(const bool& upParticle, const bool& upField
-    , std::vector<Arrow>& field, const float& t, const bool& bordered) {
+void HandlerParticle::update(const bool& upParticle, const bool& upField,
+     const float& t, const bool& bordered) {
 
     if(!(upParticle || upField)) {
         return; //not need update
@@ -149,27 +149,27 @@ void HandlerParticle::update(const bool& upParticle, const bool& upField
         }// !for i loop 
     }// !updateParticle
 
-    if(upField && size) {
-        size_t spo = field.size() / 4;
-        Arrow* begin1 = field.data();
-        Arrow* begin2 = field.data() + spo;
-        Arrow* begin3 = field.data() + 2*spo;
-        Arrow* begin4 = field.data() + 3*spo;
-        Arrow* end = field.data() + field.size();
+    // if(upField && size) {
+    //     size_t spo = field.size() / 4;
+    //     Arrow* begin1 = field.data();
+    //     Arrow* begin2 = field.data() + spo;
+    //     Arrow* begin3 = field.data() + 2*spo;
+    //     Arrow* begin4 = field.data() + 3*spo;
+    //     Arrow* end = field.data() + field.size();
 
-        // std::thread threads[] = {
-        //     std::thread(&HandlerParticle::updateField, *this, begin1, (begin1 + spo)),
-        //     std::thread(&HandlerParticle::updateField, *this, begin2, (begin2 + spo)),
-        //     std::thread(&HandlerParticle::updateField, *this, begin3, (begin3 + spo)),
-        //     std::thread(&HandlerParticle::updateField, *this, begin4, (begin4 + (field.size() - 3*spo)))
+    //     // std::thread threads[] = {
+    //     //     std::thread(&HandlerParticle::updateField, *this, begin1, (begin1 + spo)),
+    //     //     std::thread(&HandlerParticle::updateField, *this, begin2, (begin2 + spo)),
+    //     //     std::thread(&HandlerParticle::updateField, *this, begin3, (begin3 + spo)),
+    //     //     std::thread(&HandlerParticle::updateField, *this, begin4, (begin4 + (field.size() - 3*spo)))
 
-        // };
-        // for(int i = 0; i < 4; i++) {
-        //     threads[i].join();
-        // }
-        std::thread t1(&HandlerParticle::updateField, this, begin1, end);
-        t1.join();
-    }
+    //     // };
+    //     // for(int i = 0; i < 4; i++) {
+    //     //     threads[i].join();
+    //     // }
+    //     std::thread t1(&HandlerParticle::updateField, this, begin1, end);
+    //     t1.join();
+    // }
 
 
 }
