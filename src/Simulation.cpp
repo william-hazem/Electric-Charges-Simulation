@@ -13,33 +13,26 @@ Arrow Simulation::defaultFieldArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.f);
 Simulation* Simulation::getInstance() {
     std::lock_guard<std::mutex> lock(mutex);
         if(instance == nullptr)
-            instance = new Simulation(1200, 900);
+            instance = new Simulation();
         return instance;
 }
 
 Simulation::Simulation(uint32_t width, uint32_t height)
 {
+    /// initialize vars
     this->width = width;
     this->height = height;
+    window.create({width, height}, "Simulation v0.1a");
 
-    this->init();
+    /// call initializer functions
+    init();
 
     size_t size = 2;
-    
     srand(std::time(0));
     for(size_t i = 0; i < size; i++) {
-        hz::Vector2 position; 
-        position.x = rand() % (width - 100) + 100;
-        position.y = rand() % (height - 100) + 100;
-        if((int) rand() % 2) {
-            this->addParticle(true, position);
-        }
-        else {
-            this->addParticle(false, position);
-        }
+        addParticle();
     }
-
-    this->window.create({width, height}, "Simulation");
+    // particleSystem = HandlerParticle(EFIELD_OFFSET, window.getSize());
 }
 
 Simulation::~Simulation()
@@ -48,15 +41,15 @@ Simulation::~Simulation()
 }
 
 void Simulation::init() {
-    // INITIALIZE VAR
+    /// Initialize config vars
     this->running = false;
     this->pause = false;
     this->stopParticle = true;
 
     EFIELD_OFFSET = 25;
     arrowStyle = arrowDrawType::NONE;
-    // INITIALIZE FONT
-    if (Hz::loadDefaultFont(&font) ) {
+    // Initialize default font
+    if (hz::loadDefaultFont(&font) ) {
         printf("[INIT] Font Loaded \n");
     }
     else 
@@ -74,24 +67,12 @@ void Simulation::init() {
 
     // INITIALIZE COMPONENTS
 
-    initEField();
+    // initEField(); --- DEPRECATED
     printf("[INIT] EFIELD setting up \n");
     initText();
     printf("[INIT] Texts setting up \n");
     
     printf("[INIT] Sucefully initialized\n");
-}
-
-bool Simulation::initEField() {
-    float x, y;
-    for(x = EFIELD_OFFSET; x < width; x += EFIELD_OFFSET) {
-        for(y = EFIELD_OFFSET; y < height; y += EFIELD_OFFSET) {
-            vEfield.push_back(Arrow(sf::Vector2f(x, y),
-                                EFIELD_OFFSET, 1.5f));
-        }
-    }   
-
-    return true;
 }
 
 bool Simulation::initText() {
@@ -147,8 +128,6 @@ void Simulation::clear() {
 void Simulation::run() {
     // Simulation* simulation = dynamic_cast<Simulation&>(instance);
     // Simulation* a = (Simulation*) instance;
-
-    size_t particles_size = 0;
     bool bordered = true;
     bool hasUpdated = false;
 
@@ -161,8 +140,6 @@ void Simulation::run() {
     
     // fieldThread.join();
     while(this->running) {
-        
-        particles_size = particleSystem.size();
         sf::Event event;
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed) {
@@ -241,8 +218,7 @@ void Simulation::run() {
             sf::Clock clock;
             particleSystem.update (
                 !stopParticle,  //update particles
-                updateField,    //update field
-                vEfield,        //field arrows - lvalue
+                updateField && false,    //update field
                 deltaTime,           //time t
                 bordered        //active bordered simulation
             );
@@ -255,12 +231,12 @@ void Simulation::run() {
 
         if(bordered)
             drawBorder();
-        if(particles_size && arrowStyle == 2) { 
-            sf::Clock clock;
-            drawField();
-            std::cout << "time draw: " << clock.getElapsedTime().asMilliseconds() 
-                << "\t|| update time: " << updateTime << std::endl;
-        }
+        // if(particles_size && arrowStyle == 2) { 
+        //     sf::Clock clock;
+        //     drawField();
+        //     std::cout << "time draw: " << clock.getElapsedTime().asMilliseconds() 
+        //         << "\t|| update time: " << updateTime << std::endl;
+        // }
         particleSystem.draw(
             arrowStyle == arrowDrawType::ACCELERATION ? true : false
         );
@@ -283,12 +259,21 @@ void Simulation::run() {
 void Simulation::addParticle(bool proton, const hz::Vector2& position) {
     Particle newParticle(proton);
     WrapperParticle newWrapper;
-
     newParticle.setPosition(position);
-
     newWrapper.bind(newParticle);
-    
-    particleSystem.addParticle(newWrapper);
+    particleSystem.insertParticle(newWrapper);
+}
+
+void Simulation::addParticle() {
+    hz::Vector2 position; 
+    position.x = rand() % (width - 100) + 100;
+    position.y = rand() % (height - 100) + 100;
+    if((int) rand() % 2) {
+        addParticle(true, position);
+    }
+    else {
+        addParticle(false, position);
+    }
 }
 
 void Simulation::drawTextInfo() {
@@ -350,47 +335,41 @@ void Simulation::drawTextInfo() {
 
 }
 
-void Simulation::drawField() {
-    for(Arrow& arrow : vEfield) if(arrow.getActive()) {
-        window.draw(arrow);
-    }
-}
-
 /// UPDATE FUNCTIONS
-void Simulation::updateField() {
-    if(particleSystem.size() == 0) 
-        return;
-    hz::Vector2 max, min;
-    float mid(0);
-    Particle q0;
-    size_t size = vEfield.size(), i;
-    std::vector<hz::Vector2> vec;
-    vec.reserve(size);
-    for(i = 0; i < size; i++) {
-        Arrow& arrow = vEfield[i];
-        q0.setPosition(hz::Vector2(arrow.getPosition().x, arrow.getPosition().y));
-        hz::Vector2 f = particleSystem.calcE_Force_fake(q0);
-        if(max.abs() < f.abs())
-            max = f;
-        if(min.abs() > f.abs() || i == 0)
-            min = f;
-        vec[i] = f;
-        mid += f.abs();
-        arrow.setAngle(90 - f.angle());
-    }
-    mid = mid / vEfield.size();
-    float fmax = max.abs(),
-        fmin = min.abs(), scale = 255/mid;
-    for(i = 0; i < size; i++) {    
-        if(vec[i].abs() <= mid) {
-            sf::Color color = sf::Color::White;
-            color.a = vec[i].abs() * scale;
-            vEfield[i].setColor(color);
-        }
-        else vEfield[i].setColor(sf::Color::Blue);
-    }
+// void Simulation::updateField() {
+//     if(particleSystem.size() == 0) 
+//         return;
+//     hz::Vector2 max, min;
+//     float mid(0);
+//     Particle q0;
+//     size_t size = vEfield.size(), i;
+//     std::vector<hz::Vector2> vec;
+//     vec.reserve(size);
+//     for(i = 0; i < size; i++) {
+//         Arrow& arrow = vEfield[i];
+//         q0.setPosition(hz::Vector2(arrow.getPosition().x, arrow.getPosition().y));
+//         hz::Vector2 f = particleSystem.calcE_Force_fake(q0);
+//         if(max.abs() < f.abs())
+//             max = f;
+//         if(min.abs() > f.abs() || i == 0)
+//             min = f;
+//         vec[i] = f;
+//         mid += f.abs();
+//         arrow.setAngle(90 - f.angle());
+//     }
+//     mid = mid / vEfield.size();
+//     float fmax = max.abs(),
+//         fmin = min.abs(), scale = 255/mid;
+//     for(i = 0; i < size; i++) {    
+//         if(vec[i].abs() <= mid) {
+//             sf::Color color = sf::Color::White;
+//             color.a = vec[i].abs() * scale;
+//             vEfield[i].setColor(color);
+//         }
+//         else vEfield[i].setColor(sf::Color::Blue);
+//     }
     
-}
+// }
 
 /// Draw functions
 

@@ -16,13 +16,18 @@
 
 class Simulation
 {
-    static Simulation* instance;
-    static std::mutex mutex;
+    static Simulation* instance;        //Singleton Instance
+    static std::mutex mutex;            //Mutex safety
+
     enum arrowDrawType {
         NONE = 0,
         ACCELERATION,
         EFIELD
-    }ADS;
+    };
+
+    const arrowDrawType ARROW_NONE = arrowDrawType::NONE;
+    const arrowDrawType ARROW_ACCELERATION  = arrowDrawType::ACCELERATION;
+    const arrowDrawType ARROW_EFIELD = arrowDrawType::EFIELD;
 
     uint32_t width, height;
     static Arrow defaultArrow;
@@ -58,7 +63,9 @@ public:
     static Simulation* getInstance();
     
     sf::RenderWindow window;
-    Simulation();
+    Simulation() {};
+    Simulation(Simulation&) = delete;           //Singleton Logic 
+    Simulation(const Simulation&) = delete;     //Singleton Logic
     Simulation(uint32_t, uint32_t);
     ~Simulation();
 
