@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 
+#include <SFML/System/Time.hpp>
+
 #include <Hazem/graphics.hpp>
 #include <Hazem/physics.hpp>
 #include <Hazem/HandlerParticle.hpp>
@@ -15,6 +17,14 @@
 
 class Simulation
 {
+
+private:
+    void draw();
+    void processEvents();
+    void update(sf::Time elapsedTime);
+    void updateStatistics(sf::Time elapsedTime, sf::Time updateTime);
+    void render();
+
     enum arrowDrawType {
         NONE = 0,
         ACCELERATION,
@@ -67,9 +77,15 @@ public:
     void clear();
     /// \brief Reset the particles system
     void reset();
+    
     void run();
 
-    
+private:
+    static const sf::Time   timePerFrame;
+    std::size_t             mStatsNumFrames; 
+    sf::Time                mStatsUpdateTime;
+    sf::Time                mStatsDrawTime;
+    float timeFactor;
 };
 
 #endif //!HAZEM_SIMULATION

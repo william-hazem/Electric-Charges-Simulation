@@ -6,7 +6,13 @@
 Arrow Simulation::defaultArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.5f);
 Arrow Simulation::defaultFieldArrow = Arrow(sf::Vector2f(0, 0), 30.f, 12.f);
 
+const sf::Time Simulation::timePerFrame = sf::seconds(1.f/60.f);
+
 Simulation::Simulation(uint32_t width, uint32_t height)
+: timeFactor(1e-1)  // aumenta/reduz a variação de movimento das partículas
+, mStatsNumFrames(0)
+, mStatsUpdateTime()
+, mStatsDrawTime()
 {
     
     this->width = width;
@@ -135,131 +141,156 @@ void Simulation::clear() {
 
 void Simulation::run() {
 
-    size_t particles_size = 0;
-    bool bordered = true;
-    sf::Clock updateClock, fpsClock;
-    float fpsCurrent, fpsLast = fpsClock.getElapsedTime().asSeconds();
-    float deltaTime = 1e-3;
-    if(window.isOpen())
-        this->running = true;
-    
-    
-    while(this->running) {
-        particles_size = particleSystem.size();
-        sf::Event event;
-        while(window.pollEvent(event)) {
-            if(event.type == sf::Event::Closed) {
-                this->running = false;
-                window.close();
-            }
-            else if (event.type == sf::Event::Resized) {
-                sf::FloatRect visibleArea(0, 0,
-                            event.size.width, event.size.height);
-                window.setView(sf::View(visibleArea));
-                /// \todo Callback a function to rezise the vector Field or limite the drawing area
-            }
-            else if(event.type == sf::Event::MouseButtonPressed) {
-                sf::Vector2i mouse = sf::Mouse::getPosition() - window.getPosition();
-                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    this->addParticle(true, hz::Vector2(mouse.x, mouse.y));
-                    printf("[info] Particle Added: xy = (%d, %d)\n", mouse.x, mouse.y);
-                } 
-                else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-                    this->addParticle(false, hz::Vector2(mouse.x, mouse.y));
-                    printf("[info] Particle Added: xy = (%d, %d)\n", mouse.x, mouse.y);
-                }
-            } //!Mouuse
-            else if(event.type == sf::Event::KeyPressed) {
-                if(event.key.code == sf::Keyboard::Space) {
-                    stopParticle = !stopParticle;
-                    printf("[MODE CHANGED] stopParticle: %d\n", stopParticle);
-                }
-                else if(event.key.code == sf::Keyboard::F) {
-                    Text& t = mText.at("warning_mode");
-                    t.setOpacity(255);
-                    switch (arrowStyle)
-                    {
-                    case arrowDrawType::NONE:
-                        arrowStyle = arrowDrawType::ACCELERATION;
-                        t.setString("[MODE]: Aceleration Vectors");
-                        break;
-                    case arrowDrawType::ACCELERATION:
-                        arrowStyle = arrowDrawType::EFIELD;
-                        t.setString("[MODE]: Field Vectors");
-                        break;
-                    case arrowDrawType::EFIELD:
-                        arrowStyle = arrowDrawType::NONE;
-                        t.setString("[MODE]: NONE");
-                        break;
-
-                    default:
-                        break;
-                    }
-                }
-                else if(event.key.code == sf::Keyboard::R) {
-                    particleSystem.clear();
-                }
-                else if(event.key.code == sf::Keyboard::B) {
-                    bordered = !bordered;
-                    Text& t = mText.at("warning_mode");
-                    t.setOpacity(255);
-                    if(bordered) 
-                        t.setString("[MODE]: Bordered Simulation");
-                    else
-                        t.setString("[MODE]: No Border Simulation");
-                }
-                
-            }
-        }
-
-        window.clear();
-        
-        /// UPDATE
-        // static sf::Clock updateClock;
-        // if(!stopParticle) particleSystem.update();
-        // if(updateClock.getElapsedTime() > sf::milliseconds(100)) {
-        //     sf::Clock clock;
-        //     if(arrowStyle == 2) updateField();
-        //     std::cout << "update time: " << clock.getElapsedTime().asMilliseconds()
-        //         << std::endl;
-        //     updateClock.restart();
-        // }
-        bool updateField = arrowStyle == arrowDrawType::EFIELD; 
-        if(updateClock.getElapsedTime() >= sf::seconds(deltaTime)) {
-            
-            particleSystem.update(
-                !stopParticle,  //update particles
-                updateField,    //update field
-                vEfield,        //field arrows - lvalue
-                deltaTime,           //time t
-                bordered        //active bordered simulation
-            );
-        }
-
-        /// DRAWING
-        if(bordered)
-            drawBorder();
-        if(arrowStyle == 2) { 
+    sf::Clock clock;
+    sf::Time lastUpdate = sf::Time::Zero;
+    sf::Time updateTime = sf::Time::Zero;
+    while (window.isOpen())
+    {
+        sf::Time elapsedTime = clock.restart();
+        lastUpdate += elapsedTime;
+        while (lastUpdate > timePerFrame)
+        { 
             sf::Clock clock;
-            drawField();
-            std::cout << "time draw: " << clock.getElapsedTime().asMilliseconds() 
-                << std::endl;
+            lastUpdate -= timePerFrame;
+            
+            processEvents();
+            
+            update(timePerFrame);
+            updateTime = clock.restart();
+            render();
         }
-        particleSystem.draw(
-            arrowStyle == arrowDrawType::ACCELERATION ? true : false
-        );
-
-        drawTextInfo();
+        updateStatistics(timePerFrame, updateTime);
         
-        fpsCurrent = fpsClock.getElapsedTime().asSeconds();
-        Text& fpsText = mText.at("fps");
-        fpsText.setString("[FPS: " + std::to_string(int(1 / (fpsCurrent - fpsLast))) + "]");
-        fpsLast = fpsCurrent;
-        window.draw(fpsText);
-        window.display();
+        
         
     }
+    
+
 }
+
+void Simulation::processEvents()
+{
+    sf::Event event;
+    while(window.pollEvent(event)) {
+        if(event.type == sf::Event::Closed) {
+            this->running = false;
+            window.close();
+        }
+        else if (event.type == sf::Event::Resized) {
+            sf::FloatRect visibleArea(0, 0,
+                        event.size.width, event.size.height);
+            window.setView(sf::View(visibleArea));
+            /// \todo Callback a function to rezise the vector Field or limite the drawing area
+        }
+        else if(event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2i mouse = sf::Mouse::getPosition() - window.getPosition();
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                this->addParticle(true, hz::Vector2(mouse.x, mouse.y));
+                printf("[info] Particle Added: xy = (%d, %d)\n", mouse.x, mouse.y);
+            } 
+            else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+                this->addParticle(false, hz::Vector2(mouse.x, mouse.y));
+                printf("[info] Particle Added: xy = (%d, %d)\n", mouse.x, mouse.y);
+            }
+        } //!Mouuse
+        else if(event.type == sf::Event::KeyPressed) {
+            if(event.key.code == sf::Keyboard::Space) {
+                stopParticle = !stopParticle;
+                printf("[MODE CHANGED] stopParticle: %d\n", stopParticle);
+            }
+            else if(event.key.code == sf::Keyboard::F) {
+                Text& t = mText.at("warning_mode");
+                t.setOpacity(255);
+                switch (arrowStyle)
+                {
+                case arrowDrawType::NONE:
+                    arrowStyle = arrowDrawType::ACCELERATION;
+                    t.setString("[MODE]: Aceleration Vectors");
+                    break;
+                case arrowDrawType::ACCELERATION:
+                    arrowStyle = arrowDrawType::EFIELD;
+                    t.setString("[MODE]: Field Vectors");
+                    break;
+                case arrowDrawType::EFIELD:
+                    arrowStyle = arrowDrawType::NONE;
+                    t.setString("[MODE]: NONE");
+                    break;
+
+                default:
+                    break;
+                }
+            }
+            else if(event.key.code == sf::Keyboard::R) {
+                particleSystem.clear();
+            }
+            else if(event.key.code == sf::Keyboard::B) {
+                Text& t = mText.at("warning_mode");
+                t.setOpacity(255);
+                if(true) 
+                    t.setString("[MODE]: Bordered Simulation");
+                else
+                    t.setString("[MODE]: No Border Simulation");
+            }
+            
+        }
+    }
+}
+
+void Simulation::updateStatistics(sf::Time elapsedTime, sf::Time updateTime)
+{
+    mStatsUpdateTime += elapsedTime;
+    mStatsNumFrames += 1;
+    Text& statistic = mText.at("fps");
+
+    if(mStatsUpdateTime >= sf::seconds(1.f))
+    {
+        statistic.setString(
+            "Frame/Second = " + std::to_string(mStatsNumFrames) + "\n" +
+            "Time/Update  = " + std::to_string(mStatsUpdateTime.asMicroseconds() / mStatsNumFrames) + "us\n" +
+            "Update/Second = " + std::to_string(updateTime.asMicroseconds()) + "us"
+        );
+        mStatsUpdateTime -= sf::seconds(1.f);
+        mStatsNumFrames = 0;
+    }
+}
+
+void Simulation::update(sf::Time elapsedTime)
+{
+    bool bordered = true;
+    
+    bool updateField = arrowStyle == arrowDrawType::EFIELD; 
+        
+    particleSystem.update(
+        !stopParticle,  //update particles
+        updateField,    //update field
+        vEfield,        //field arrows - lvalue
+        elapsedTime.asSeconds() * timeFactor,           //time t
+        bordered        //active bordered simulation
+    );
+
+}
+
+
+void Simulation::render() {
+    window.clear();
+     /// DRAWING
+    if(bool bordered = true)
+        drawBorder();
+    if(arrowStyle == 2) { 
+        sf::Clock clock;
+        drawField();
+    }
+    particleSystem.draw(
+        arrowStyle == arrowDrawType::ACCELERATION ? true : false
+    );
+
+    drawTextInfo();
+    
+    Text& fpsText = mText.at("fps");
+    window.draw(fpsText);
+    window.display();
+}
+
 // !RUN
 
 void Simulation::addParticle(bool proton, const hz::Vector2& position) {
