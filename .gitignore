@@ -5,7 +5,7 @@
 *.dll
 *.a
 *.lib
-lib
+lib/*
 
 # Build File
 build
